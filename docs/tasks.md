@@ -12,8 +12,8 @@ Goal: Establish repo structure, lock API contracts, and produce minimal prototyp
 | ------ | -------------------------------------------- | ----------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
 | [X]    | Project bootstrap and protected branch setup | Vardz - Tech Lead / `main`, `develop`, `feature/infra-core` | None                                   | Repo structure, branch protection, baseline Next.js app, shared coding standards |
 | [X]    | Bright Data discovery prototype              | Kurt - Scraping Specialist / `feature/brightdata-pipeline`  | Brand definition from product scope    | SERP query prototype returning top suspicious results                            |
-| [ ]    | Claude schema and scoring contract           | Pol - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
-| [ ]    | Dashboard shell and navigation skeleton      | Charles - Frontend UI/UX / `feature/dashboard-ui`           | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
+| [x]    | Claude schema and scoring contract           | Pol - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
+| [X]    | Dashboard shell and navigation skeleton      | Charles - Frontend UI/UX / `feature/dashboard-ui`           | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
 | [X]    | QA matrix and sprint acceptance rules        | Zie - QA & Strategy / `feature/qa-validation`               | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
 
 ### Per-Task Instructions and AI Prompts (Day 1)
