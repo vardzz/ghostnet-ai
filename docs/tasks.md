@@ -8,19 +8,19 @@ This sprint is a tightly orchestrated assembly line. Each day has explicit, stri
 
 Goal: Establish repo structure, lock API contracts, and produce minimal prototypes so parallel work can begin.
 
-| Task Name                                    | Assigned Member & Branch                                       | Dependencies                           | Target Deliverable                                                               |
-| -------------------------------------------- | -------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
-| Project bootstrap and protected branch setup | Member 1 - Tech Lead / `main`, `develop`, `feature/infra-core` | None                                   | Repo structure, branch protection, baseline Next.js app, shared coding standards |
-| Bright Data discovery prototype              | Member 2 - Scraping Specialist / `feature/brightdata-pipeline` | Brand definition from product scope    | SERP query prototype returning top suspicious results                            |
-| Claude schema and scoring contract           | Member 3 - AI Engineer / `feature/claude-orchestration`        | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
-| Dashboard shell and navigation skeleton      | Member 4 - Frontend UI/UX / `feature/dashboard-ui`             | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
-| QA matrix and sprint acceptance rules        | Member 5 - QA & Strategy / `feature/qa-validation`             | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
+| Task Name                                    | Assigned Member & Branch                                    | Dependencies                           | Target Deliverable                                                               |
+| -------------------------------------------- | ----------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
+| Project bootstrap and protected branch setup | Vardz - Tech Lead / `main`, `develop`, `feature/infra-core` | None                                   | Repo structure, branch protection, baseline Next.js app, shared coding standards |
+| Bright Data discovery prototype              | Kurt - Scraping Specialist / `feature/brightdata-pipeline`  | Brand definition from product scope    | SERP query prototype returning top suspicious results                            |
+| Claude schema and scoring contract           | Pol - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
+| Dashboard shell and navigation skeleton      | Charles - Frontend UI/UX / `feature/dashboard-ui`           | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
+| QA matrix and sprint acceptance rules        | Zie - QA & Strategy / `feature/qa-validation`               | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
 
 ### Per-Task Instructions and AI Prompts (Day 1)
 
 #### Task: Project bootstrap and protected branch setup
 
-- Assigned: Member 1 (Tech Lead) — `feature/infra-core`
+- Assigned: Vardz (Tech Lead) — `feature/infra-core`
 - Strict instructions (junior-level):
   1.  Create `feature/infra-core` from `develop` locally: `git checkout -b feature/infra-core develop`.
   2.  Initialize a minimal Next.js TypeScript app: `npx create-next-app@latest --ts` in the repo root if not present.
@@ -28,7 +28,7 @@ Goal: Establish repo structure, lock API contracts, and produce minimal prototyp
   4.  Create branch protection rules in the repo settings (require PR reviews for `main` and `develop`).
   5.  Commit and push the branch; open a PR targeting `develop` with a clear checklist.
   6.  Add CI lint and a minimal `check-environment` script to fail fast if env vars are missing.
-  7.  Share the PR link in the team Slack and tag Members 2–5 for visibility.
+  7.  Share the PR link in the team Slack and tag Kurt, Pol, Charles, and Zie for visibility.
 
 AI Prompt (copy/paste):
 
@@ -39,13 +39,13 @@ Step-by-step: create a `feature/infra-core` branch from `develop`; initialize a 
 
 #### Task: Bright Data discovery prototype
 
-- Assigned: Member 2 (Scraping Specialist) — `feature/brightdata-pipeline`
+- Assigned: Kurt (Scraping Specialist) — `feature/brightdata-pipeline`
 - Strict instructions (junior-level):
   1.  Create branch from `develop`: `git checkout -b feature/brightdata-pipeline develop`.
   2.  Implement a minimal SERP client wrapper that accepts brand name and permutations and returns top-N results (N=8).
   3.  Log structured JSON with fields: `query`, `title`, `url`, `snippet`, `rank`, `discoveredAt`.
   4.  Add a small script `scripts/serp-sample.ts` that runs a sample query and writes `sample-evidence.json` to `/tmp` or `docs/samples`.
-  5.  Push the branch and open a PR; attach `sample-evidence.json` for Member 3 to consume.
+  5.  Push the branch and open a PR; attach `sample-evidence.json` for Pol to consume.
 
 AI Prompt (copy/paste):
 
@@ -55,13 +55,13 @@ You are an AI assistant guiding a junior scraping engineer. Build a Bright Data 
 
 #### Task: Claude schema and scoring contract
 
-- Assigned: Member 3 (AI Engineer) — `feature/claude-orchestration`
+- Assigned: Pol (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Branch from `develop`: `git checkout -b feature/claude-orchestration develop`.
   2.  Draft a locked TypeScript interface for analysis output, including `threatScore`, `confidence`, `threatType`, `urgencyLevel`, `evidenceCitations`, and `reportSummary`.
   3.  Create a JSON Schema validator and example valid/invalid payloads under `docs/samples/claude-schema/`.
   4.  Write a minimal prompt template that injects the evidence packet and requests machine-parseable JSON.
-  5.  Commit and open a PR; tag Member 2 to validate sample evidence passes your schema.
+  5.  Commit and open a PR; tag Kurt to validate sample evidence passes your schema.
 
 AI Prompt (copy/paste):
 
@@ -71,7 +71,7 @@ You are an AI engineer assistant. Produce a strict TypeScript interface and JSON
 
 #### Task: Dashboard shell and navigation skeleton
 
-- Assigned: Member 4 (Frontend UI/UX) — `feature/dashboard-ui`
+- Assigned: Charles (Frontend UI/UX) — `feature/dashboard-ui`
 - Strict instructions (junior-level):
   1.  Branch: `git checkout -b feature/dashboard-ui develop`.
   2.  Scaffold a simple React/Tailwind shell with a left nav and a main content area.
@@ -88,7 +88,7 @@ You are a frontend helper. Provide clear steps and example React (+TypeScript +T
 
 #### Task: QA matrix and sprint acceptance rules
 
-- Assigned: Member 5 (QA & Strategy) — `feature/qa-validation`
+- Assigned: Zie (QA & Strategy) — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Branch: `git checkout -b feature/qa-validation develop`.
   2.  Draft an acceptance checklist covering: happy-path scan, blocked-fetch handling, schema validation failures, report gating, and tenant isolation.
@@ -108,19 +108,19 @@ You are a QA automation assistant. Create a concise acceptance checklist for a 4
 
 Goal: Connect discovery -> capture -> analysis -> UI with concrete artifacts and a live feed prototype.
 
-| Task Name                                   | Assigned Member & Branch                                       | Dependencies                   | Target Deliverable                                            |
-| ------------------------------------------- | -------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
-| Supabase schema and evidence storage wiring | Member 1 - Tech Lead / `feature/infra-core`                    | Day 1 contract lock            | Brands and Threats tables plus evidence buckets and RLS rules |
-| Scraping Browser capture flow               | Member 2 - Scraping Specialist / `feature/brightdata-pipeline` | SERP prototype                 | Full-page screenshot capture with safe DOM summaries          |
-| Claude threat analysis implementation       | Member 3 - AI Engineer / `feature/claude-orchestration`        | Evidence packet from Member 2  | Scoring pipeline that returns validated JSON analysis         |
-| Live threat feed UI integration             | Member 4 - Frontend UI/UX / `feature/dashboard-ui`             | API contract and mock payloads | Dashboard list bound to live threat data and evidence links   |
-| Test scaffolding and E2E checkpoints        | Member 5 - QA & Strategy / `feature/qa-validation`             | Day 1 interfaces               | Automated smoke tests for one brand, one threat, one report   |
+| Task Name                                   | Assigned Member & Branch                                   | Dependencies                   | Target Deliverable                                            |
+| ------------------------------------------- | ---------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Supabase schema and evidence storage wiring | Vardz - Tech Lead / `feature/infra-core`                   | Day 1 contract lock            | Brands and Threats tables plus evidence buckets and RLS rules |
+| Scraping Browser capture flow               | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | SERP prototype                 | Full-page screenshot capture with safe DOM summaries          |
+| Claude threat analysis implementation       | Pol - AI Engineer / `feature/claude-orchestration`         | Evidence packet from Kurt      | Scoring pipeline that returns validated JSON analysis         |
+| Live threat feed UI integration             | Charles - Frontend UI/UX / `feature/dashboard-ui`          | API contract and mock payloads | Dashboard list bound to live threat data and evidence links   |
+| Test scaffolding and E2E checkpoints        | Zie - QA & Strategy / `feature/qa-validation`              | Day 1 interfaces               | Automated smoke tests for one brand, one threat, one report   |
 
 ### Per-Task Instructions and AI Prompts (Day 2)
 
 #### Task: Supabase schema and evidence storage wiring
 
-- Assigned: Member 1 — `feature/infra-core`
+- Assigned: Vardz — `feature/infra-core`
 - Strict instructions (junior-level):
   1.  Create `brands` and `threats` tables with columns described in `docs/architecture.md`.
   2.  Create storage buckets `evidence` and `reports` and set RLS policies for tenant isolation.
@@ -136,7 +136,7 @@ You are a DB migration assistant. Provide SQL and a small Node.js migration scri
 
 #### Task: Scraping Browser capture flow
 
-- Assigned: Member 2 — `feature/brightdata-pipeline`
+- Assigned: Kurt — `feature/brightdata-pipeline`
 - Strict instructions (junior-level):
   1.  Implement a browser capture that loads a candidate URL in a fresh context.
   2.  Wait for `networkidle` or a 10s stabilization timeout.
@@ -153,7 +153,7 @@ You are a browser automation assistant. Provide TypeScript code using Playwright
 
 #### Task: Claude threat analysis implementation
 
-- Assigned: Member 3 — `feature/claude-orchestration`
+- Assigned: Pol — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Implement a service that accepts the normalized evidence bundle and calls Claude with the locked prompt template.
   2.  Ensure the request times out at `ANTHROPIC_TIMEOUT_MS` and parse only JSON responses.
@@ -169,7 +169,7 @@ You are an AI integration assistant. Write a TypeScript service that takes an ev
 
 #### Task: Live threat feed UI integration
 
-- Assigned: Member 4 — `feature/dashboard-ui`
+- Assigned: Charles — `feature/dashboard-ui`
 - Strict instructions (junior-level):
   1.  Implement a service call to `GET /api/threats/live` and bind it to the `Threats` list.
   2.  Use polling with 5s interval or SSE if backend supports it.
@@ -185,7 +185,7 @@ You are a frontend integration assistant. Provide concise React hooks and exampl
 
 #### Task: Test scaffolding and E2E checkpoints
 
-- Assigned: Member 5 — `feature/qa-validation`
+- Assigned: Zie — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Create smoke tests that assert: brand registration, a simple scan lifecycle (queued -> captured -> analyzed), and report generation gating.
   2.  Use mocked services for Bright Data and Claude to simulate success and failure cases.
@@ -204,19 +204,19 @@ You are a QA automation assistant. Provide Jest-based test skeletons for: brand 
 
 Goal: Add robustness (timeouts, retries), finalize failure taxonomy, and produce human-reviewable legal drafts.
 
-| Task Name                                       | Assigned Member & Branch                                       | Dependencies                 | Target Deliverable                                                       |
-| ----------------------------------------------- | -------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------ |
-| Deadline enforcement and retry policy           | Member 1 - Tech Lead / `feature/infra-core`                    | Integration paths from Day 2 | Hard timeout controls and bounded retry rules                            |
-| Anti-bot failure handling and fallback capture  | Member 2 - Scraping Specialist / `feature/brightdata-pipeline` | Browser capture flow         | Clean failure states for blocked or partially rendered targets           |
-| Cease-and-desist report generator               | Member 3 - AI Engineer / `feature/claude-orchestration`        | Validated threat records     | Structured legal draft with evidence citations and abuse contact hints   |
-| Evidence viewer and report action panel         | Member 4 - Frontend UI/UX / `feature/dashboard-ui`             | Threat and report fixtures   | UI for screenshot review, report preview, and manual approval            |
-| Validation suite expansion and release criteria | Member 5 - QA & Strategy / `feature/qa-validation`             | End-to-end flows from Day 2  | Regression tests covering timeout, evidence integrity, and report gating |
+| Task Name                                       | Assigned Member & Branch                                   | Dependencies                 | Target Deliverable                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------ |
+| Deadline enforcement and retry policy           | Vardz - Tech Lead / `feature/infra-core`                   | Integration paths from Day 2 | Hard timeout controls and bounded retry rules                            |
+| Anti-bot failure handling and fallback capture  | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | Browser capture flow         | Clean failure states for blocked or partially rendered targets           |
+| Cease-and-desist report generator               | Pol - AI Engineer / `feature/claude-orchestration`         | Validated threat records     | Structured legal draft with evidence citations and abuse contact hints   |
+| Evidence viewer and report action panel         | Charles - Frontend UI/UX / `feature/dashboard-ui`          | Threat and report fixtures   | UI for screenshot review, report preview, and manual approval            |
+| Validation suite expansion and release criteria | Zie - QA & Strategy / `feature/qa-validation`              | End-to-end flows from Day 2  | Regression tests covering timeout, evidence integrity, and report gating |
 
 ### Per-Task Instructions and AI Prompts (Day 3)
 
 #### Task: Deadline enforcement and retry policy
 
-- Assigned: Member 1 — `feature/infra-core`
+- Assigned: Vardz — `feature/infra-core`
 - Strict instructions (junior-level):
   1.  Implement a global scan deadline using `SCAN_DEADLINE_MS` and pass a `deadlineAt` timestamp with each job.
   2.  Cancel or short-circuit any downstream calls when remaining time < 15s.
@@ -231,7 +231,7 @@ You are a reliability engineer assistant. Provide code snippets showing how to e
 
 #### Task: Anti-bot failure handling and fallback capture
 
-- Assigned: Member 2 — `feature/brightdata-pipeline`
+- Assigned: Kurt — `feature/brightdata-pipeline`
 - Strict instructions (junior-level):
   1.  Define explicit failure categories: `fetch_failed`, `render_failed`, `blocked_by_target`, `incomplete_evidence`.
   2.  When blocked, capture headers, status code, and a short console log snippet; still persist the record with `analysis_state='needs_review'`.
@@ -246,7 +246,7 @@ You are an anti-bot handling assistant. Provide a strict implementation plan and
 
 #### Task: Cease-and-desist report generator
 
-- Assigned: Member 3 — `feature/claude-orchestration`
+- Assigned: Pol — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Build the report generator that accepts a validated `threatId` and produces the `legalReport` object.
   2.  Ensure the generator uses only verified evidence references (screenshot path, HTML snapshot path, WHOIS/registrar hints).
@@ -261,7 +261,7 @@ You are an assistant building a takedown report generator. Produce a TypeScript 
 
 #### Task: Evidence viewer and report action panel
 
-- Assigned: Member 4 — `feature/dashboard-ui`
+- Assigned: Charles — `feature/dashboard-ui`
 - Strict instructions (junior-level):
   1.  Implement evidence viewer UI to preview screenshot and rendered HTML snapshot safely (iframe sandboxed for HTML previews).
   2.  Add `Approve Report` and `Request Changes` review actions; wire them to API calls that change `reportStatus`.
@@ -276,7 +276,7 @@ You are a frontend assistant. Provide React component code for an evidence viewe
 
 #### Task: Validation suite expansion and release criteria
 
-- Assigned: Member 5 — `feature/qa-validation`
+- Assigned: Zie — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Expand tests to include deadline-abort, anti-bot scenarios, and schema validation failures.
   2.  Add regression tests ensuring RLS prevents cross-tenant access.
@@ -295,24 +295,24 @@ You are a QA strategist assistant. Provide Jest test cases and guidance to valid
 
 Goal: Final polish, tuning, and release readiness — ensure the demo is stable and all handoffs are complete.
 
-| Task Name                                     | Assigned Member & Branch                                       | Dependencies                     | Target Deliverable                                                  |
-| --------------------------------------------- | -------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------- |
-| Final integration polish and release gate     | Member 1 - Tech Lead / `main`, `develop`, `feature/infra-core` | All feature branches merged      | Release candidate with clean build and deploy sequence              |
-| Search coverage tuning and edge-case sampling | Member 2 - Scraping Specialist / `feature/brightdata-pipeline` | Production-like fixtures         | Finalized discovery patterns with safe limits and tuned filters     |
-| Prompt optimization and JSON validation sweep | Member 3 - AI Engineer / `feature/claude-orchestration`        | Realistic evidence samples       | Lower-failure-rate analysis prompt and validation guardrail set     |
-| UI responsiveness and presentation polish     | Member 4 - Frontend UI/UX / `feature/dashboard-ui`             | Stable live feed and report flow | Demo-ready dashboard with mobile-safe layout and clear states       |
-| Final QA, launch checklist, and handoff notes | Member 5 - QA & Strategy / `feature/qa-validation`             | Full integrated build            | Sign-off document, known risks log, and demo verification checklist |
+| Task Name                                     | Assigned Member & Branch                                    | Dependencies                     | Target Deliverable                                                  |
+| --------------------------------------------- | ----------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------- |
+| Final integration polish and release gate     | Vardz - Tech Lead / `main`, `develop`, `feature/infra-core` | All feature branches merged      | Release candidate with clean build and deploy sequence              |
+| Search coverage tuning and edge-case sampling | Kurt - Scraping Specialist / `feature/brightdata-pipeline`  | Production-like fixtures         | Finalized discovery patterns with safe limits and tuned filters     |
+| Prompt optimization and JSON validation sweep | Pol - AI Engineer / `feature/claude-orchestration`          | Realistic evidence samples       | Lower-failure-rate analysis prompt and validation guardrail set     |
+| UI responsiveness and presentation polish     | Charles - Frontend UI/UX / `feature/dashboard-ui`           | Stable live feed and report flow | Demo-ready dashboard with mobile-safe layout and clear states       |
+| Final QA, launch checklist, and handoff notes | Zie - QA & Strategy / `feature/qa-validation`               | Full integrated build            | Sign-off document, known risks log, and demo verification checklist |
 
 ### Per-Task Instructions and AI Prompts (Day 4)
 
 #### Task: Final integration polish and release gate
 
-- Assigned: Member 1 — `main`, `develop`, `feature/infra-core`
+- Assigned: Vardz — `main`, `develop`, `feature/infra-core`
 - Strict instructions (junior-level):
   1.  Merge `feature/*` branches into `develop`, run full CI, and fix critical failures.
   2.  Produce a release candidate PR from `develop` to `main` with a deployment checklist.
   3.  Verify environment variables and secrets are present in the deployment environment.
-  4.  Tag Member 5 to perform final sign-off tests.
+  4.  Tag Zie to perform final sign-off tests.
 
 AI Prompt (copy/paste):
 
@@ -322,12 +322,12 @@ You are a release engineer assistant. Provide a clear checklist and exact CLI co
 
 #### Task: Search coverage tuning and edge-case sampling
 
-- Assigned: Member 2 — `feature/brightdata-pipeline`
+- Assigned: Kurt — `feature/brightdata-pipeline`
 - Strict instructions (junior-level):
   1.  Run the discovery prototype against a curated set of 20 brand variants and collect failure modes.
   2.  Adjust query templates to reduce false positives and cap candidate limits.
   3.  Produce a short report listing common false-positive patterns and suggested filter rules.
-  4.  Share filtered sample JSON with Member 3 and Member 5.
+  4.  Share filtered sample JSON with Pol and Zie.
 
 AI Prompt (copy/paste):
 
@@ -337,9 +337,9 @@ You are a data tuning assistant. Run the SERP discovery prototype against a set 
 
 #### Task: Prompt optimization and JSON validation sweep
 
-- Assigned: Member 3 — `feature/claude-orchestration`
+- Assigned: Pol — `feature/claude-orchestration`
 - Strict instructions (junior-level):
-  1.  Re-run the Claude prompt against the curated samples from Member 2.
+  1.  Re-run the Claude prompt against the curated samples from Kurt.
   2.  Tune the prompt to reduce schema validation failures (emphasize `return only JSON` and give strict numeric ranges).
   3.  Create a short mapping document of common failure modes and prompt fixes.
   4.  Commit prompt versions and link them in the PR.
@@ -352,12 +352,12 @@ You are an LLM prompt optimization assistant. Take the provided evidence example
 
 #### Task: UI responsiveness and presentation polish
 
-- Assigned: Member 4 — `feature/dashboard-ui`
+- Assigned: Charles — `feature/dashboard-ui`
 - Strict instructions (junior-level):
   1.  Run UX checks on mobile and desktop; fix any layout breakages.
   2.  Ensure images are lazy-loaded and the evidence slide-over is accessible.
   3.  Add a short demo script and keyboard-shortcut mappings for reviewers.
-  4.  Create a final PR and tag Member 1 and Member 5 for visual acceptance.
+  4.  Create a final PR and tag Vardz and Zie for visual acceptance.
 
 AI Prompt (copy/paste):
 
@@ -367,12 +367,12 @@ You are a frontend QA assistant. Provide a checklist and sample code to ensure r
 
 #### Task: Final QA, launch checklist, and handoff notes
 
-- Assigned: Member 5 — `feature/qa-validation`
+- Assigned: Zie — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Run the full test suite and the smoke tests against the release candidate.
   2.  Verify tenant isolation, evidence integrity, deadline behavior, and report gating.
   3.  Produce the sign-off document with known risks and reproduction steps.
-  4.  Deliver the sign-off to Member 1 and request final deployment.
+  4.  Deliver the sign-off to Vardz and request final deployment.
 
 AI Prompt (copy/paste):
 

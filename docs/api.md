@@ -302,7 +302,7 @@ Example payload:
   "legalEntityName": "GhostNet AI, Inc.",
   "contactEmail": "legal@ghostnet.ai",
   "includeCeaseAndDesist": true,
-  "reviewerName": "Member 1"
+  "reviewerName": "Vardz"
 }
 ```
 
