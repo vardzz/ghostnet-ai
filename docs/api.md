@@ -10,7 +10,8 @@ export type ThreatType =
   | "phishing"
   | "spoofed_social"
   | "impersonation"
-  | "lookalike_domain";
+  | "lookalike_domain"
+  | "benign";
 export type ThreatState =
   | "discovered"
   | "captured"
@@ -26,6 +27,8 @@ export type AnalysisState =
   | "validated"
   | "needs_review"
   | "report_ready";
+
+// ThreatState tracks the lifecycle; AnalysisState tracks model validation.
 
 export interface BrandHandle {
   platform:
@@ -52,7 +55,9 @@ export interface ThreatSummary {
   threatScore: number;
   confidenceScore: number;
   urgencyLevel: UrgencyLevel;
+  threatState: ThreatState;
   analysisState: AnalysisState;
+  reportStatus?: "draft" | "review_required" | "approved";
   screenshotUrl?: string;
   htmlSnapshotUrl?: string;
   firstSeenAt: string;
@@ -220,9 +225,11 @@ Example response:
       "threatScore": 94,
       "confidenceScore": 0.97,
       "urgencyLevel": "critical",
+      "threatState": "validated",
       "analysisState": "validated",
-      "screenshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/screenshots/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.png",
-      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/html/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.html",
+      "reportStatus": "review_required",
+      "screenshotUrl": "https://project.supabase.co/storage/v1/object/sign/evidence/screenshots/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.png?token=SIGNED_TOKEN",
+      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/sign/evidence/html/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.html?token=SIGNED_TOKEN",
       "firstSeenAt": "2026-05-26T14:00:34.000Z",
       "updatedAt": "2026-05-26T14:01:08.000Z"
     },
@@ -237,9 +244,11 @@ Example response:
       "threatScore": 81,
       "confidenceScore": 0.91,
       "urgencyLevel": "high",
+      "threatState": "validated",
       "analysisState": "validated",
-      "screenshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/screenshots/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.png",
-      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/html/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.html",
+      "reportStatus": "draft",
+      "screenshotUrl": "https://project.supabase.co/storage/v1/object/sign/evidence/screenshots/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.png?token=SIGNED_TOKEN",
+      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/sign/evidence/html/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.html?token=SIGNED_TOKEN",
       "firstSeenAt": "2026-05-26T14:00:48.000Z",
       "updatedAt": "2026-05-26T14:01:11.000Z"
     }
@@ -255,7 +264,7 @@ Event format:
 
 ```ts
 export interface LiveThreatEvent {
-  event: "threat.created" | "threat.updated" | "threat.closed";
+  event: "threat.snapshot" | "threat.created" | "threat.updated" | "threat.closed";
   timestamp: string;
   threat: ThreatSummary;
 }
@@ -384,4 +393,5 @@ Example response:
 - Every endpoint must return structured JSON on error.
 - Every mutation response must include timestamps.
 - Every evidence-bearing response must include persistent URLs, not ephemeral local paths.
+- Evidence URLs should be short-lived signed URLs in production; public URLs are acceptable only for demo environments.
 - Every report generation step must remain review-gated and never auto-send external notices without an explicit human approval step.

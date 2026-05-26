@@ -128,6 +128,7 @@ Core columns:
 - `brand_id` - foreign key to Brands
 - `scan_id` - scan execution identifier
 - `threat_type` - typosquat, phishing, spoofed_social, impersonation, lookalike_domain
+ - `threat_type` - typosquat, phishing, spoofed_social, impersonation, lookalike_domain, benign
 - `target_url` - discovered suspicious URL or profile URL
 - `observed_domain` - domain extracted from the target
 - `raw_title` - page or profile title
@@ -138,6 +139,8 @@ Core columns:
 - `confidence_score` - numeric confidence from 0.0 to 1.0
 - `urgency_level` - low, medium, high, critical
 - `analysis_state` - pending, analyzing, validated, needs_review, report_ready
+ - `analysis_state` - pending, analyzing, validated, needs_review, report_ready
+ - `threat_state` - discovered, captured, analyzing, validated, needs_review, report_ready, closed
 - `legal_recommendation` - short structured outcome string
 - `created_at` - time discovered
 - `updated_at` - time last modified
@@ -223,6 +226,7 @@ Claude is used as a reasoning layer, but the application must never trust free-f
 - `evidenceCitations`
 - `recommendedAction`
 - `abuseContactHints`
+ - `abuseContactHint`
 - `reportSummary`
 
 The parser should reject any response that:
@@ -249,6 +253,7 @@ The canonical frontend state for each threat should include:
 - scoring fields: `threatScore`, `confidenceScore`, `urgencyLevel`
 - evidence fields: `screenshotUrl`, `htmlSnapshotPath`, `firstSeenAt`
 - workflow fields: `analysisState`, `reportState`, `reviewState`
+ - workflow fields: `threatState`, `analysisState`, `reportStatus`
 
 ### 3.5 State Transitions
 
