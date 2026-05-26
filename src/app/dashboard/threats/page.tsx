@@ -1,4 +1,4 @@
-import { getLiveThreatsFixture } from "../../../lib/threats";
+import { getLiveThreatsFixture } from "../../../../lib/threats";
 import { ThreatsTableClient } from "./threats-table-client";
 
 export default function ThreatsPage() {
