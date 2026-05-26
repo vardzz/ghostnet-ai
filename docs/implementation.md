@@ -4,13 +4,13 @@
 
 The sprint is organized around a strict assembly line. `main` is the protected production branch, `develop` is the integration branch, and each feature domain has a single owner branch to prevent cross-contamination of work.
 
-| Member                         | Responsibility                                              | Branch                                  |
-| ------------------------------ | ----------------------------------------------------------- | --------------------------------------- |
-| Member 1 - Tech Lead           | Platform orchestration, schema design, CI, release control  | `main`, `develop`, `feature/infra-core` |
-| Member 2 - Scraping Specialist | Bright Data discovery, browser automation, evidence capture | `feature/brightdata-pipeline`           |
-| Member 3 - AI Engineer         | Claude prompting, validation, scoring, report generation    | `feature/claude-orchestration`          |
-| Member 4 - Frontend UI/UX      | Dashboard composition, live threat feed, evidence views     | `feature/dashboard-ui`                  |
-| Member 5 - QA & Strategy       | Test matrix, validation criteria, release readiness         | `feature/qa-validation`                 |
+| Member                     | Responsibility                                              | Branch                                  |
+| -------------------------- | ----------------------------------------------------------- | --------------------------------------- |
+| Vardz - Tech Lead          | Platform orchestration, schema design, CI, release control  | `main`, `develop`, `feature/infra-core` |
+| Kurt - Scraping Specialist | Bright Data discovery, browser automation, evidence capture | `feature/brightdata-pipeline`           |
+| Pol - AI Engineer          | Claude prompting, validation, scoring, report generation    | `feature/claude-orchestration`          |
+| Charles - Frontend UI/UX   | Dashboard composition, live threat feed, evidence views     | `feature/dashboard-ui`                  |
+| Zie - QA & Strategy        | Test matrix, validation criteria, release readiness         | `feature/qa-validation`                 |
 
 ### Mandatory Environment Variables
 
@@ -156,6 +156,7 @@ interface ThreatAnalysisResult {
     | "phishing"
     | "spoofed_social"
     | "impersonation"
+    | "lookalike_domain"
     | "benign";
   urgencyLevel: "low" | "medium" | "high" | "critical";
   brandMatchReason: string;
@@ -172,6 +173,8 @@ Validation requirements:
 - all enum values must match the approved vocabulary
 - every analysis must cite at least one evidence source
 - any parsing failure must produce a `needs_review` state instead of a fabricated score
+- any parsing failure must produce a `needs_review` state instead of a fabricated score
+- `benign` results should transition the threat to `closed` once evidence is stored
 
 ## 3. Strict System Error Handling
 
