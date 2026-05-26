@@ -88,7 +88,7 @@ To preserve evidentiary value:
 The browser may see:
 
 - score
-- confidence
+- confidenceScore
 - a screenshot URL
 - a human-readable summary
 - a report status
