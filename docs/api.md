@@ -30,6 +30,21 @@ export type AnalysisState =
 
 // ThreatState tracks the lifecycle; AnalysisState tracks model validation.
 
+## Canonical Field Names
+
+Use these canonical camelCase field names across the project and docs as the single source of truth:
+
+- `threatScore` (number, 0-100)
+- `confidenceScore` (number, 0.0-1.0)
+- `urgencyLevel` ("low" | "medium" | "high" | "critical")
+- `threatType` (enum)
+- `analysisState` (enum)
+- `threatState` (enum)
+- `reportStatus` ("draft" | "review_required" | "approved")
+- `screenshotUrl` / `screenshotPath` (URL vs storage path)
+- `htmlSnapshotUrl` / `htmlSnapshotPath` (URL vs storage path)
+
+
 export interface BrandHandle {
   platform:
     | "x"
@@ -264,7 +279,11 @@ Event format:
 
 ```ts
 export interface LiveThreatEvent {
-  event: "threat.snapshot" | "threat.created" | "threat.updated" | "threat.closed";
+  event:
+    | "threat.snapshot"
+    | "threat.created"
+    | "threat.updated"
+    | "threat.closed";
   timestamp: string;
   threat: ThreatSummary;
 }

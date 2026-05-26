@@ -58,7 +58,7 @@ You are an AI assistant guiding a junior scraping engineer. Build a Bright Data 
 - Assigned: Pol (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Branch from `develop`: `git checkout -b feature/claude-orchestration develop`.
-  2.  Draft a locked TypeScript interface for analysis output, including `threatScore`, `confidence`, `threatType`, `urgencyLevel`, `evidenceCitations`, and `reportSummary`.
+  2.  Draft a locked TypeScript interface for analysis output, including `threatScore`, `confidenceScore`, `threatType`, `urgencyLevel`, `evidenceCitations`, and `reportSummary`.
   3.  Create a JSON Schema validator and example valid/invalid payloads under `docs/samples/claude-schema/`.
   4.  Write a minimal prompt template that injects the evidence packet and requests machine-parseable JSON.
   5.  Commit and open a PR; tag Kurt to validate sample evidence passes your schema.
@@ -66,7 +66,7 @@ You are an AI assistant guiding a junior scraping engineer. Build a Bright Data 
 AI Prompt (copy/paste):
 
 ```
-You are an AI engineer assistant. Produce a strict TypeScript interface and JSON Schema for a Claude analysis result (fields: threatScore [0-100], confidence [0.0-1.0], threatType enum, urgencyLevel enum, evidenceCitations array, reportSummary string). Provide two example JSON responses (valid and invalid) and a short prompt template that asks Claude to return only this JSON. Explain how to validate Claude output and what to do if validation fails.
+You are an AI engineer assistant. Produce a strict TypeScript interface and JSON Schema for a Claude analysis result (fields: threatScore [0-100], confidenceScore [0.0-1.0], threatType enum, urgencyLevel enum, evidenceCitations array, reportSummary string). Provide two example JSON responses (valid and invalid) and a short prompt template that asks Claude to return only this JSON. Explain how to validate Claude output and what to do if validation fails.
 ```
 
 #### Task: Dashboard shell and navigation skeleton
@@ -164,7 +164,7 @@ You are a browser automation assistant. Provide TypeScript code using Playwright
 AI Prompt (copy/paste):
 
 ```
-You are an AI integration assistant. Write a TypeScript service that takes an evidence bundle, calls Claude with the provided prompt template, enforces a 15s timeout, and validates the returned JSON against the schema. If validation fails, set `analysis_state` to `needs_review`; if success, write the parsed values (threatScore, confidence, etc.) to the database. Provide error handling and a replay endpoint for testing.
+You are an AI integration assistant. Write a TypeScript service that takes an evidence bundle, calls Claude with the provided prompt template, enforces a 15s timeout, and validates the returned JSON against the schema. If validation fails, set `analysisState` to `needs_review`; if success, write the parsed values (threatScore, confidenceScore, etc.) to the database. Provide error handling and a replay endpoint for testing.
 ```
 
 #### Task: Live threat feed UI integration
@@ -234,7 +234,7 @@ You are a reliability engineer assistant. Provide code snippets showing how to e
 - Assigned: Kurt — `feature/brightdata-pipeline`
 - Strict instructions (junior-level):
   1.  Define explicit failure categories: `fetch_failed`, `render_failed`, `blocked_by_target`, `incomplete_evidence`.
-  2.  When blocked, capture headers, status code, and a short console log snippet; still persist the record with `analysis_state='needs_review'`.
+  2.  When blocked, capture headers, status code, and a short console log snippet; still persist the record with `analysisState='needs_review'`.
   3.  Add heuristics to retry with Web Unlocker only once.
   4.  Add unit/integration tests that simulate returns for each failure category.
 
