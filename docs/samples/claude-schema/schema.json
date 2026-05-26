@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ghostnet-ai.dev/schemas/claude-analysis-output/1.0.0",
+  "title": "ClaudeAnalysisOutput",
+  "description": "Machine-parseable threat analysis result returned by the Claude AI engine. Schema version 1.0.0 — do not modify field names or types without bumping schemaVersion and getting sign-off from the AI Engineering lead.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "analysedAt",
+    "threatScore",
+    "confidence",
+    "threatType",
+    "urgencyLevel",
+    "evidenceCitations",
+    "reportSummary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Semver string identifying the output contract version.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["1.0.0"]
+    },
+    "analysedAt": {
+      "type": "string",
+      "description": "ISO 8601 UTC timestamp at which the analysis was produced.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+      "examples": ["2026-05-26T13:00:00.000Z"]
+    },
+    "threatScore": {
+      "type": "number",
+      "description": "Overall threat risk score. Range: 0.00 (no threat) to 10.00 (maximum severity).",
+      "minimum": 0,
+      "maximum": 10,
+      "examples": [7.43, 0.0, 10.0]
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Model self-reported confidence in the analysis. Range: 0.00 to 1.00.",
+      "minimum": 0,
+      "maximum": 1,
+      "examples": [0.87, 0.5, 1.0]
+    },
+    "threatType": {
+      "type": "string",
+      "description": "Primary threat category identified in the evidence.",
+      "enum": [
+        "phishing",
+        "malware",
+        "data_exfiltration",
+        "insider_threat",
+        "ddos",
+        "ransomware",
+        "social_engineering",
+        "unknown"
+      ]
+    },
+    "urgencyLevel": {
+      "type": "string",
+      "description": "Recommended SOC response urgency.",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "evidenceCitations": {
+      "type": "array",
+      "description": "Ordered list of evidence items that influenced the verdict. Must have at least one entry when threatScore > 0.",
+      "items": {
+        "type": "object",
+        "required": ["source", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Human-readable label for the evidence source.",
+            "minLength": 1
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this evidence is relevant to the verdict.",
+            "minLength": 1
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Optional verbatim snippet from the source (≤ 500 chars).",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "reportSummary": {
+      "type": "string",
+      "description": "Executive-level summary for inclusion in a security report. Plain text, 50–500 characters.",
+      "minLength": 50,
+      "maxLength": 500
+    }
+  }
+}

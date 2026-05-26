@@ -1,0 +1,27 @@
+{
+  "_comment": "Valid payload example for ClaudeAnalysisOutput schema v1.0.0. This payload must pass validateClaudeOutput() without errors.",
+  "schemaVersion": "1.0.0",
+  "analysedAt": "2026-05-26T13:00:00.000Z",
+  "threatScore": 8.75,
+  "confidence": 0.91,
+  "threatType": "phishing",
+  "urgencyLevel": "critical",
+  "evidenceCitations": [
+    {
+      "source": "Email header analysis — message ID <abc123@evil.com>",
+      "rationale": "Sender domain registered 2 hours before the email was sent; SPF and DKIM both fail; display name spoofs CFO.",
+      "excerpt": "From: \"Sarah (CFO)\" <cfo@evil-lookalike.com> | SPF: fail | DKIM: fail | Registered: 2026-05-26T10:58:00Z"
+    },
+    {
+      "source": "URL reputation feed — VirusTotal hit",
+      "rationale": "Embedded link resolves to a known credential-harvesting page flagged by 38/90 AV engines.",
+      "excerpt": "https://secure-login.evil-lookalike.com/auth — VT score: 38/90 (phishing)"
+    },
+    {
+      "source": "Employee click-through log — proxy record #5821",
+      "rationale": "Three employees followed the link within 4 minutes of delivery, indicating active credential harvesting may already be in progress.",
+      "excerpt": "GET https://secure-login.evil-lookalike.com/auth — users: alice@corp.com, bob@corp.com, carol@corp.com"
+    }
+  ],
+  "reportSummary": "A highly convincing spear-phishing email impersonating the CFO was delivered to 47 mailboxes. Three employees clicked the embedded credential-harvesting link. Immediate containment, password resets, and MFA verification are required. Severity rated CRITICAL due to active exploitation evidence."
+}
