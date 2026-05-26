@@ -156,6 +156,7 @@ interface ThreatAnalysisResult {
     | "phishing"
     | "spoofed_social"
     | "impersonation"
+    | "lookalike_domain"
     | "benign";
   urgencyLevel: "low" | "medium" | "high" | "critical";
   brandMatchReason: string;
@@ -172,6 +173,8 @@ Validation requirements:
 - all enum values must match the approved vocabulary
 - every analysis must cite at least one evidence source
 - any parsing failure must produce a `needs_review` state instead of a fabricated score
+- any parsing failure must produce a `needs_review` state instead of a fabricated score
+- `benign` results should transition the threat to `closed` once evidence is stored
 
 ## 3. Strict System Error Handling
 

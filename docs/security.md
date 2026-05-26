@@ -45,7 +45,7 @@ Operational rules:
 - load secrets at process startup
 - fail fast if a required key is absent
 - do not forward secrets into the browser render tree
-- use short-lived signed URLs for evidence access instead of public writable buckets
+- use short-lived signed URLs for evidence access instead of public writable buckets; public URLs are acceptable only for demo environments with restricted scope
 
 ## 2. Defensive Data Isolation
 
