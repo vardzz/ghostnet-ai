@@ -150,12 +150,13 @@ The output schema must be strict and machine-validatable:
 ```ts
 interface ThreatAnalysisResult {
   threatScore: number;
-  confidence: number;
+  confidenceScore: number;
   threatType:
     | "typosquat"
     | "phishing"
     | "spoofed_social"
     | "impersonation"
+    | "lookalike_domain"
     | "benign";
   urgencyLevel: "low" | "medium" | "high" | "critical";
   brandMatchReason: string;
@@ -168,10 +169,11 @@ interface ThreatAnalysisResult {
 
 Validation requirements:
 
-- all numeric scores must stay within their expected ranges
-- all enum values must match the approved vocabulary
-- every analysis must cite at least one evidence source
-- any parsing failure must produce a `needs_review` state instead of a fabricated score
+all numeric scores must stay within their expected ranges
+all enum values must match the approved vocabulary
+every analysis must cite at least one evidence source
+any parsing failure must produce a `needs_review` state instead of a fabricated score
+`benign` results should transition the threat to `closed` once evidence is stored
 
 ## 3. Strict System Error Handling
 

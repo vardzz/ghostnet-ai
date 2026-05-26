@@ -1,0 +1,134 @@
+{
+  "_comment": "Invalid payload examples for ClaudeAnalysisOutput schema v1.0.0. Each entry documents the expected validation errors so reviewers and test authors know exactly what should be rejected.",
+  "invalidPayloads": [
+    {
+      "_id": "invalid-001",
+      "_description": "threatScore out of range (negative value)",
+      "_expectedErrors": [
+        "threatScore must be between 0.00 and 10.00, got -1"
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": -1,
+      "confidence": 0.85,
+      "threatType": "malware",
+      "urgencyLevel": "high",
+      "evidenceCitations": [
+        {
+          "source": "AV quarantine log",
+          "rationale": "Trojan detected in user download directory."
+        }
+      ],
+      "reportSummary": "A trojan was detected in the user download directory and quarantined automatically. Manual review of lateral movement indicators is recommended before marking as resolved."
+    },
+    {
+      "_id": "invalid-002",
+      "_description": "confidence out of range (> 1.0)",
+      "_expectedErrors": [
+        "confidence must be between 0.00 and 1.00, got 1.5"
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": 5.00,
+      "confidence": 1.5,
+      "threatType": "insider_threat",
+      "urgencyLevel": "medium",
+      "evidenceCitations": [
+        {
+          "source": "DLP alert #2201",
+          "rationale": "Large data export to personal cloud storage outside business hours."
+        }
+      ],
+      "reportSummary": "An employee exported 4 GB of sensitive project files to a personal Dropbox account at 02:15 local time. Review access logs and interview the employee. Confidence score exceeded the allowed maximum."
+    },
+    {
+      "_id": "invalid-003",
+      "_description": "Unrecognised threatType enum value",
+      "_expectedErrors": [
+        "threatType must be one of: phishing, malware, data_exfiltration, insider_threat, ddos, ransomware, social_engineering, unknown; got \"zero_day\""
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": 9.10,
+      "confidence": 0.78,
+      "threatType": "zero_day",
+      "urgencyLevel": "critical",
+      "evidenceCitations": [
+        {
+          "source": "IDS alert #99",
+          "rationale": "Heap-spray pattern detected against unpatched service."
+        }
+      ],
+      "reportSummary": "A potential zero-day exploit targeting an unpatched internal service was detected by the IDS. Immediate patching or service isolation is required. The threatType value used is not in the allowed enumeration and must be corrected."
+    },
+    {
+      "_id": "invalid-004",
+      "_description": "Missing required fields: urgencyLevel and reportSummary",
+      "_expectedErrors": [
+        "urgencyLevel must be a string",
+        "reportSummary must be a string"
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": 3.20,
+      "confidence": 0.60,
+      "threatType": "ddos",
+      "evidenceCitations": [
+        {
+          "source": "NetFlow baseline deviation",
+          "rationale": "Inbound traffic spiked 800% above baseline from 300+ distinct source IPs."
+        }
+      ]
+    },
+    {
+      "_id": "invalid-005",
+      "_description": "evidenceCitations is empty when threatScore > 0",
+      "_expectedErrors": [
+        "evidenceCitations must contain at least one entry when threatScore > 0"
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": 6.50,
+      "confidence": 0.72,
+      "threatType": "ransomware",
+      "urgencyLevel": "critical",
+      "evidenceCitations": [],
+      "reportSummary": "Ransomware indicators were detected on the endpoint. File extension mass-rename events and shadow-copy deletion commands were observed. Citations array is empty, which is invalid when a non-zero threat score is reported."
+    },
+    {
+      "_id": "invalid-006",
+      "_description": "reportSummary too short (< 50 characters)",
+      "_expectedErrors": [
+        "reportSummary must be 50–500 characters, got 18"
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00.000Z",
+      "threatScore": 2.10,
+      "confidence": 0.55,
+      "threatType": "social_engineering",
+      "urgencyLevel": "low",
+      "evidenceCitations": [
+        {
+          "source": "Help-desk ticket #4410",
+          "rationale": "Caller asked for password reset without valid employee ID."
+        }
+      ],
+      "reportSummary": "Vishing attempt."
+    },
+    {
+      "_id": "invalid-007",
+      "_description": "analysedAt timestamp is not ISO 8601 UTC (missing trailing Z)",
+      "_expectedErrors": [
+        "analysedAt must be an ISO 8601 UTC timestamp (e.g. \"2026-05-26T13:00:00.000Z\"), got \"2026-05-26T13:00:00\""
+      ],
+      "schemaVersion": "1.0.0",
+      "analysedAt": "2026-05-26T13:00:00",
+      "threatScore": 0.00,
+      "confidence": 0.30,
+      "threatType": "unknown",
+      "urgencyLevel": "low",
+      "evidenceCitations": [],
+      "reportSummary": "No credible threat indicators were found in the submitted evidence packet. The analysis confidence is low due to sparse telemetry. Continue routine monitoring and resubmit with additional context if available."
+    }
+  ]
+}

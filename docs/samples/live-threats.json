@@ -1,0 +1,41 @@
+{
+  "brandId": "brand_01JY0G3M9P3F5Y9ZQ5K7Q0F2CB",
+  "generatedAt": "2026-05-26T14:01:12.000Z",
+  "activeCount": 2,
+  "threats": [
+    {
+      "id": "threat_01JY0G4J5F2A4X1V7N8C9D0E1F",
+      "brandId": "brand_01JY0G3M9P3F5Y9ZQ5K7Q0F2CB",
+      "scanId": "scan_01JY0G3N1T0H7Y4V1K2D8R9S0A",
+      "threatType": "typosquat",
+      "targetUrl": "https://ghostnct.ai/login",
+      "observedDomain": "ghostnct.ai",
+      "rawTitle": "GhostNet AI Secure Login",
+      "threatScore": 94,
+      "confidenceScore": 0.97,
+      "urgencyLevel": "critical",
+      "analysisState": "validated",
+      "screenshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/screenshots/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.png",
+      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/html/threat_01JY0G4J5F2A4X1V7N8C9D0E1F.html",
+      "firstSeenAt": "2026-05-26T14:00:34.000Z",
+      "updatedAt": "2026-05-26T14:01:08.000Z"
+    },
+    {
+      "id": "threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U",
+      "brandId": "brand_01JY0G3M9P3F5Y9ZQ5K7Q0F2CB",
+      "scanId": "scan_01JY0G3N1T0H7Y4V1K2D8R9S0A",
+      "threatType": "spoofed_social",
+      "targetUrl": "https://x.com/GhostNetAI_support",
+      "observedDomain": "x.com",
+      "rawTitle": "GhostNet AI Support",
+      "threatScore": 81,
+      "confidenceScore": 0.91,
+      "urgencyLevel": "high",
+      "analysisState": "validated",
+      "screenshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/screenshots/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.png",
+      "htmlSnapshotUrl": "https://project.supabase.co/storage/v1/object/public/evidence/html/threat_01JY0G4K3C8T2R5M1Q7W4E6Y8U.html",
+      "firstSeenAt": "2026-05-26T14:00:48.000Z",
+      "updatedAt": "2026-05-26T14:01:11.000Z"
+    }
+  ]
+}

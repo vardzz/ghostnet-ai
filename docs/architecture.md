@@ -1,5 +1,7 @@
 # GhostNet AI Architecture
 
+Naming conventions: database column names in SQL examples use snake_case (typical SQL style). API, TypeScript, and schema fields use camelCase. Follow the `api.md` Canonical Field Names as the source of truth for application-level fields.
+
 ## 1. System Architecture Overview
 
 GhostNet AI is designed as a latency-controlled, evidence-first pipeline. Each scan is orchestrated to complete inside a strict sub-2-minute execution window by doing the minimum amount of synchronous work required to surface a credible threat, then persisting all heavy artifacts for async review.
@@ -122,12 +124,12 @@ Recommended indexes:
 
 Purpose: store every discovered suspicious target and its scored outcome.
 
-Core columns:
+Core columns (DB column naming uses snake_case):
 
 - `id` - UUID primary key
 - `brand_id` - foreign key to Brands
 - `scan_id` - scan execution identifier
-- `threat_type` - typosquat, phishing, spoofed_social, impersonation, lookalike_domain
+- `threat_type` - typosquat, phishing, spoofed_social, impersonation, lookalike_domain, benign
 - `target_url` - discovered suspicious URL or profile URL
 - `observed_domain` - domain extracted from the target
 - `raw_title` - page or profile title
@@ -138,6 +140,7 @@ Core columns:
 - `confidence_score` - numeric confidence from 0.0 to 1.0
 - `urgency_level` - low, medium, high, critical
 - `analysis_state` - pending, analyzing, validated, needs_review, report_ready
+- `threat_state` - discovered, captured, analyzing, validated, needs_review, report_ready, closed
 - `legal_recommendation` - short structured outcome string
 - `created_at` - time discovered
 - `updated_at` - time last modified
@@ -217,12 +220,13 @@ This preserves the chain of custody and allows legal review to inspect exactly w
 Claude is used as a reasoning layer, but the application must never trust free-form text directly. The response should conform to a locked JSON schema that includes:
 
 - `threatScore`
-- `confidence`
+- `confidenceScore`
 - `threatType`
 - `brandMatchReason`
 - `evidenceCitations`
 - `recommendedAction`
 - `abuseContactHints`
+
 - `reportSummary`
 
 The parser should reject any response that:
@@ -247,8 +251,8 @@ The canonical frontend state for each threat should include:
 
 - identity fields: `id`, `brandId`, `targetUrl`, `threatType`
 - scoring fields: `threatScore`, `confidenceScore`, `urgencyLevel`
-- evidence fields: `screenshotUrl`, `htmlSnapshotPath`, `firstSeenAt`
-- workflow fields: `analysisState`, `reportState`, `reviewState`
+- evidence fields: `screenshotUrl`, `htmlSnapshotUrl`, `firstSeenAt`
+- workflow fields: `threatState`, `analysisState`, `reportStatus`
 
 ### 3.5 State Transitions
 
