@@ -114,7 +114,7 @@ export function HeroSection() {
           className="flex flex-col items-start gap-4 sm:flex-row"
         >
           <Link
-            href="/dashboard/threats"
+            href="/dashboard"
             className="group flex items-center gap-2 border border-foreground bg-foreground px-6 py-3 font-mono text-sm text-background transition-all duration-200 hover:bg-transparent hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:outline-none"
           >
             View Threat Dashboard
@@ -158,23 +158,6 @@ export function HeroSection() {
           </pre>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-8 flex flex-col items-center gap-2"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          Scroll to Explore
-        </span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-          className="h-4 w-[1px] bg-muted-foreground"
-        />
-      </motion.div>
     </section>
   )
 }
