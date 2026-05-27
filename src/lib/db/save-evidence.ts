@@ -1,3 +1,6 @@
+import { basename } from "path";
+import { uploadSupabaseObject } from "../supabase-rest";
+
 type EvidenceBundle = {
   tenantId: string;
   brandId: string;
@@ -17,46 +20,35 @@ type EvidenceBundle = {
   legalRecommendation?: string;
 };
 
-type SupabaseConfig = {
-  url: string;
-  serviceRoleKey: string;
-};
+async function uploadArtifact(
+  bucket: 'evidence' | 'reports',
+  basePath: string,
+  sourcePath: string,
+  contentType: string
+): Promise<string> {
+  const objectPath = `${basePath}/${basename(sourcePath)}`;
 
-function getSupabaseConfig(): SupabaseConfig {
-  const url = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url) {
-    throw new Error('SUPABASE_URL is required');
+  try {
+    const uploaded = await uploadSupabaseObject(bucket, objectPath, sourcePath, contentType);
+    return uploaded ?? sourcePath;
+  } catch {
+    return sourcePath;
   }
-
-  if (!serviceRoleKey) {
-    throw new Error('SUPABASE_SERVICE_ROLE_KEY is required');
-  }
-
-  return { url, serviceRoleKey };
-}
-
-async function supabaseRequest<T>(path: string, init: RequestInit): Promise<T> {
-  const { url, serviceRoleKey } = getSupabaseConfig();
-  const response = await fetch(`${url}${path}`, {
-    ...init,
-    headers: {
-      apikey: serviceRoleKey,
-      authorization: `Bearer ${serviceRoleKey}`,
-      'content-type': 'application/json',
-      ...(init.headers || {}),
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Supabase request failed for ${path}: ${response.status} ${response.statusText}`);
-  }
-
-  return (await response.json()) as T;
 }
 
 export async function saveEvidence(bundle: EvidenceBundle) {
+  const basePath = [bundle.tenantId, bundle.brandId, bundle.scanId ?? 'scan']
+    .filter(Boolean)
+    .join('/');
+
+  const screenshotPath = await uploadArtifact('evidence', basePath, bundle.screenshotPath, 'image/png');
+  const htmlSnapshotPath = await uploadArtifact(
+    'evidence',
+    basePath,
+    bundle.htmlSnapshotPath,
+    'text/html; charset=utf-8'
+  );
+
   const row = {
     tenant_id: bundle.tenantId,
     brand_id: bundle.brandId,
@@ -66,8 +58,8 @@ export async function saveEvidence(bundle: EvidenceBundle) {
     observed_domain: bundle.observedDomain ?? null,
     raw_title: bundle.rawTitle ?? null,
     raw_excerpt: bundle.rawExcerpt ?? null,
-    html_snapshot_path: bundle.htmlSnapshotPath,
-    screenshot_path: bundle.screenshotPath,
+    html_snapshot_path: htmlSnapshotPath,
+    screenshot_path: screenshotPath,
     threat_score: bundle.threatScore,
     confidence_score: bundle.confidenceScore,
     urgency_level: bundle.urgencyLevel,
@@ -76,13 +68,15 @@ export async function saveEvidence(bundle: EvidenceBundle) {
     legal_recommendation: bundle.legalRecommendation ?? null,
   };
 
-  const inserted = await supabaseRequest<Array<Record<string, unknown>>>('/rest/v1/threats?select=*', {
-    method: 'POST',
-    headers: {
-      Prefer: 'return=representation',
-    },
-    body: JSON.stringify(row),
-  });
+  const { hasSupabaseCredentials, supabaseUpsertRow } = await import("../supabase-rest");
+  if (!hasSupabaseCredentials()) {
+    return { ...row, screenshot_path: screenshotPath, html_snapshot_path: htmlSnapshotPath };
+  }
 
-  return inserted[0];
+  const inserted = await supabaseUpsertRow<Array<Record<string, unknown>>>(
+    '/rest/v1/threats?on_conflict=id',
+    row
+  );
+
+  return inserted?.[0] ?? row;
 }

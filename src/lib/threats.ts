@@ -1,4 +1,4 @@
-import liveThreatsFixture from "../docs/samples/live-threats.json";
+import liveThreatsFixture from "../../docs/samples/live-threats.json";
 
 export type LiveThreatFixture = typeof liveThreatsFixture;
 

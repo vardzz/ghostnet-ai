@@ -2,23 +2,26 @@
  * @file threats-store.ts
  * @description Persistence layer for threat analysis results.
  *
- * Currently backed by an in-memory Map so the pipeline works end-to-end
- * without a live Supabase instance. Each TODO block is marked with the
- * exact Supabase client call Vardz needs to drop in.
- *
- * Thread safety note: the in-memory store is per-process and will reset
- * on server restart — acceptable for local dev and demos only.
+ * Uses an in-memory Map as a local fallback and Supabase when credentials are
+ * configured. This keeps the Day 2 pipeline usable in dev while making the
+ * live feed and analysis writes real when a database is available.
  */
 
 import type { ClaudeAnalysisOutput } from "../../types/claude-analysis";
-import type { AnalysisState } from "./analysis-service";
+import { hasSupabaseCredentials, supabaseSelectRows, supabaseUpsertRow } from "../supabase-rest";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-/** A row as it would exist in the `threats` table. */
 export interface ThreatRecord {
   threatId: string;
-  analysisState: AnalysisState | "pending";
+  tenantId?: string | null;
+  brandId?: string | null;
+  scanId?: string | null;
+  targetUrl?: string | null;
+  observedDomain?: string | null;
+  rawTitle?: string | null;
+  rawExcerpt?: string | null;
+  screenshotPath?: string | null;
+  htmlSnapshotPath?: string | null;
+  analysisState: "pending" | "validated" | "needs_review";
   threatScore: number | null;
   confidence: number | null;
   threatType: string | null;
@@ -26,34 +29,174 @@ export interface ThreatRecord {
   reportSummary: string | null;
   schemaVersion: string | null;
   analysedAt: string | null;
-  /** Raw model output attached when state is needs_review. */
   rawModelOutput: string | null;
-  /** Validation errors, JSON-stringified, when state is needs_review. */
   validationErrors: string | null;
   updatedAt: string;
 }
 
-// ─── In-Memory Store ──────────────────────────────────────────────────────────
+type ThreatSeed = Partial<Pick<ThreatRecord,
+  | "tenantId"
+  | "brandId"
+  | "scanId"
+  | "targetUrl"
+  | "observedDomain"
+  | "rawTitle"
+  | "rawExcerpt"
+  | "screenshotPath"
+  | "htmlSnapshotPath"
+>>;
 
-/** In-memory store — replace with Supabase calls (see TODO blocks below). */
+type ThreatRow = {
+  id: string;
+  tenant_id: string | null;
+  brand_id: string | null;
+  scan_id: string | null;
+  target_url: string | null;
+  observed_domain: string | null;
+  raw_title: string | null;
+  raw_excerpt: string | null;
+  screenshot_path: string | null;
+  html_snapshot_path: string | null;
+  analysis_state: "pending" | "validated" | "needs_review";
+  threat_score: number | string | null;
+  confidence_score: number | string | null;
+  threat_type: string | null;
+  urgency_level: string | null;
+  report_summary: string | null;
+  schema_version: string | null;
+  analysed_at: string | null;
+  raw_model_output: string | null;
+  validation_errors: string | null;
+  updated_at: string;
+};
+
 const store = new Map<string, ThreatRecord>();
 
-// ─── Write Helpers ────────────────────────────────────────────────────────────
+function toNumber(value: number | string | null): number | null {
+  if (typeof value === "number") {
+    return value;
+  }
 
-/**
- * Writes a successful analysis result to the threats table.
- *
- * @param threatId  - The threat row primary key.
- * @param analysis  - The validated ClaudeAnalysisOutput.
- * @returns The persisted ThreatRecord.
- */
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+function mapRowToRecord(row: ThreatRow): ThreatRecord {
+  return {
+    threatId: row.id,
+    tenantId: row.tenant_id,
+    brandId: row.brand_id,
+    scanId: row.scan_id,
+    targetUrl: row.target_url,
+    observedDomain: row.observed_domain,
+    rawTitle: row.raw_title,
+    rawExcerpt: row.raw_excerpt,
+    screenshotPath: row.screenshot_path,
+    htmlSnapshotPath: row.html_snapshot_path,
+    analysisState: row.analysis_state,
+    threatScore: toNumber(row.threat_score),
+    confidence: toNumber(row.confidence_score),
+    threatType: row.threat_type,
+    urgencyLevel: row.urgency_level,
+    reportSummary: row.report_summary,
+    schemaVersion: row.schema_version,
+    analysedAt: row.analysed_at,
+    rawModelOutput: row.raw_model_output,
+    validationErrors: row.validation_errors,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapRecordToRow(record: ThreatRecord): ThreatRow {
+  return {
+    id: record.threatId,
+    tenant_id: record.tenantId ?? null,
+    brand_id: record.brandId ?? null,
+    scan_id: record.scanId ?? null,
+    target_url: record.targetUrl ?? null,
+    observed_domain: record.observedDomain ?? null,
+    raw_title: record.rawTitle ?? null,
+    raw_excerpt: record.rawExcerpt ?? null,
+    screenshot_path: record.screenshotPath ?? null,
+    html_snapshot_path: record.htmlSnapshotPath ?? null,
+    analysis_state: record.analysisState,
+    threat_score: record.threatScore,
+    confidence_score: record.confidence,
+    threat_type: record.threatType,
+    urgency_level: record.urgencyLevel,
+    report_summary: record.reportSummary,
+    schema_version: record.schemaVersion,
+    analysed_at: record.analysedAt,
+    raw_model_output: record.rawModelOutput,
+    validation_errors: record.validationErrors,
+    updated_at: record.updatedAt,
+  };
+}
+
+async function loadThreatRecord(threatId: string): Promise<ThreatRecord | undefined> {
+  const memoryRecord = store.get(threatId);
+  if (memoryRecord) {
+    return memoryRecord;
+  }
+
+  if (!hasSupabaseCredentials()) {
+    return undefined;
+  }
+
+  const rows = await supabaseSelectRows<ThreatRow>(
+    `/rest/v1/threats?select=*&id=eq.${encodeURIComponent(threatId)}&limit=1`
+  );
+
+  return rows?.[0] ? mapRowToRecord(rows[0]) : undefined;
+}
+
+async function persistThreatRecord(record: ThreatRecord): Promise<void> {
+  store.set(record.threatId, record);
+
+  if (!hasSupabaseCredentials()) {
+    return;
+  }
+
+  const previous = await loadThreatRecord(record.threatId);
+  const merged: ThreatRecord = {
+    ...previous,
+    ...record,
+    threatId: record.threatId,
+    updatedAt: record.updatedAt,
+  };
+
+  if (!merged.tenantId || !merged.brandId) {
+    return;
+  }
+
+  await supabaseUpsertRow<ThreatRow[]>(
+    "/rest/v1/threats?on_conflict=id",
+    mapRecordToRow(merged)
+  );
+}
+
 export async function writeSuccessfulAnalysis(
   threatId: string,
-  analysis: ClaudeAnalysisOutput
+  analysis: ClaudeAnalysisOutput,
+  seed?: ThreatSeed
 ): Promise<ThreatRecord> {
+  const previous = await loadThreatRecord(threatId);
   const record: ThreatRecord = {
     threatId,
-    analysisState: "success",
+    tenantId: seed?.tenantId ?? previous?.tenantId ?? null,
+    brandId: seed?.brandId ?? previous?.brandId ?? null,
+    scanId: seed?.scanId ?? previous?.scanId ?? null,
+    targetUrl: seed?.targetUrl ?? previous?.targetUrl ?? null,
+    observedDomain: seed?.observedDomain ?? previous?.observedDomain ?? null,
+    rawTitle: seed?.rawTitle ?? previous?.rawTitle ?? null,
+    rawExcerpt: seed?.rawExcerpt ?? previous?.rawExcerpt ?? null,
+    screenshotPath: seed?.screenshotPath ?? previous?.screenshotPath ?? null,
+    htmlSnapshotPath: seed?.htmlSnapshotPath ?? previous?.htmlSnapshotPath ?? null,
+    analysisState: "validated",
     threatScore: analysis.threatScore,
     confidence: analysis.confidence,
     threatType: analysis.threatType,
@@ -66,48 +209,28 @@ export async function writeSuccessfulAnalysis(
     updatedAt: new Date().toISOString(),
   };
 
-  // ── In-memory write ───────────────────────────────────────────────────────
-  store.set(threatId, record);
-
-  // TODO (Vardz): replace the Map write above with:
-  //
-  // const { error } = await supabase
-  //   .from("threats")
-  //   .update({
-  //     analysis_state:   "success",
-  //     threat_score:     analysis.threatScore,
-  //     confidence:       analysis.confidence,
-  //     threat_type:      analysis.threatType,
-  //     urgency_level:    analysis.urgencyLevel,
-  //     report_summary:   analysis.reportSummary,
-  //     schema_version:   analysis.schemaVersion,
-  //     analysed_at:      analysis.analysedAt,
-  //     raw_model_output: null,
-  //     validation_errors: null,
-  //     updated_at:       new Date().toISOString(),
-  //   })
-  //   .eq("id", threatId);
-  //
-  // if (error) throw new Error(`Supabase write failed: ${error.message}`);
-
+  await persistThreatRecord(record);
   return record;
 }
 
-/**
- * Marks a threat as needs_review and stores the raw model output.
- *
- * @param threatId        - The threat row primary key.
- * @param rawModelOutput  - The unparsed text from Claude.
- * @param validationErrors - Schema errors if the JSON was parsed but invalid.
- * @returns The persisted ThreatRecord.
- */
 export async function writeNeedsReview(
   threatId: string,
   rawModelOutput: string | null,
-  validationErrors?: string[]
+  validationErrors?: string[],
+  seed?: ThreatSeed
 ): Promise<ThreatRecord> {
+  const previous = await loadThreatRecord(threatId);
   const record: ThreatRecord = {
     threatId,
+    tenantId: seed?.tenantId ?? previous?.tenantId ?? null,
+    brandId: seed?.brandId ?? previous?.brandId ?? null,
+    scanId: seed?.scanId ?? previous?.scanId ?? null,
+    targetUrl: seed?.targetUrl ?? previous?.targetUrl ?? null,
+    observedDomain: seed?.observedDomain ?? previous?.observedDomain ?? null,
+    rawTitle: seed?.rawTitle ?? previous?.rawTitle ?? null,
+    rawExcerpt: seed?.rawExcerpt ?? previous?.rawExcerpt ?? null,
+    screenshotPath: seed?.screenshotPath ?? previous?.screenshotPath ?? null,
+    htmlSnapshotPath: seed?.htmlSnapshotPath ?? previous?.htmlSnapshotPath ?? null,
     analysisState: "needs_review",
     threatScore: null,
     confidence: null,
@@ -121,53 +244,24 @@ export async function writeNeedsReview(
     updatedAt: new Date().toISOString(),
   };
 
-  // ── In-memory write ───────────────────────────────────────────────────────
-  store.set(threatId, record);
-
-  // TODO (Vardz): replace the Map write above with:
-  //
-  // const { error } = await supabase
-  //   .from("threats")
-  //   .update({
-  //     analysis_state:    "needs_review",
-  //     raw_model_output:  rawModelOutput,
-  //     validation_errors: validationErrors ? JSON.stringify(validationErrors) : null,
-  //     updated_at:        new Date().toISOString(),
-  //   })
-  //   .eq("id", threatId);
-  //
-  // if (error) throw new Error(`Supabase write failed: ${error.message}`);
-
+  await persistThreatRecord(record);
   return record;
 }
 
-// ─── Read Helpers ─────────────────────────────────────────────────────────────
-
-/**
- * Retrieves a threat record by ID from the in-memory store.
- *
- * @param threatId - The threat row primary key.
- * @returns The ThreatRecord or undefined when not found.
- */
-export function getThreatRecord(threatId: string): ThreatRecord | undefined {
-  // TODO (Vardz): replace with:
-  //
-  // const { data, error } = await supabase
-  //   .from("threats")
-  //   .select("*")
-  //   .eq("id", threatId)
-  //   .single();
-  //
-  // if (error) throw new Error(`Supabase read failed: ${error.message}`);
-  // return data;
-
-  return store.get(threatId);
+export async function getThreatRecord(threatId: string): Promise<ThreatRecord | undefined> {
+  return loadThreatRecord(threatId);
 }
 
-/**
- * Returns all threat records (for debug/listing purposes).
- * In production this would be a paginated Supabase query with RLS.
- */
-export function getAllThreatRecords(): ThreatRecord[] {
+export async function getAllThreatRecords(): Promise<ThreatRecord[]> {
+  if (hasSupabaseCredentials()) {
+    const rows = await supabaseSelectRows<ThreatRow>(
+      "/rest/v1/threats?select=*&order=updated_at.desc&limit=50"
+    );
+
+    if (rows && rows.length > 0) {
+      return rows.map(mapRowToRecord);
+    }
+  }
+
   return Array.from(store.values());
 }

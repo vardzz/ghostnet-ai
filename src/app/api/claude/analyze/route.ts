@@ -26,6 +26,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runClaudeAnalysis } from "@/lib/claude/analysis-service";
 import { writeSuccessfulAnalysis, writeNeedsReview } from "@/lib/claude/threats-store";
+import { saveEvidence } from "@/lib/db/save-evidence";
 import type { EvidencePacket } from "@/lib/claude/prompt-template";
 
 // ─── Request Schema ───────────────────────────────────────────────────────────
@@ -33,6 +34,17 @@ import type { EvidencePacket } from "@/lib/claude/prompt-template";
 interface AnalyzeRequestBody {
   threatId: string;
   evidence: EvidencePacket;
+  threatContext?: {
+    tenantId: string;
+    brandId: string;
+    scanId?: string;
+    targetUrl: string;
+    observedDomain?: string;
+    rawTitle?: string;
+    rawExcerpt?: string;
+    screenshotPath: string;
+    htmlSnapshotPath: string;
+  };
 }
 
 function isValidBody(body: unknown): body is AnalyzeRequestBody {
@@ -68,19 +80,34 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const { threatId, evidence } = body;
+  const threatContext = body.threatContext;
 
   // ── Run analysis ──────────────────────────────────────────────────────────
   const result = await runClaudeAnalysis(evidence);
 
   // ── Persist result ────────────────────────────────────────────────────────
   if (result.analysisState === "success" && result.analysis) {
-    await writeSuccessfulAnalysis(threatId, result.analysis);
+    await writeSuccessfulAnalysis(threatId, result.analysis, threatContext);
   } else {
     await writeNeedsReview(
       threatId,
       result.rawModelOutput ?? null,
-      result.validationErrors
+      result.validationErrors,
+      threatContext
     );
+  }
+
+  if (threatContext) {
+    await saveEvidence({
+      ...threatContext,
+      threatType: result.analysis?.threatType ?? "benign",
+      threatScore: result.analysis?.threatScore ?? 0,
+      confidenceScore: result.analysis?.confidence ?? 0,
+      urgencyLevel: result.analysis?.urgencyLevel ?? "low",
+      analysisState: result.analysisState === "success" ? "validated" : "needs_review",
+      threatState: result.analysisState === "success" ? "validated" : "needs_review",
+      legalRecommendation: result.analysis?.reportSummary,
+    });
   }
 
   // ── Return response ───────────────────────────────────────────────────────
