@@ -1,72 +1,16 @@
 {
   "brandName": "GhostNet AI",
   "permutations": [],
-  "generatedAt": "2026-05-26T12:08:10.620Z",
+  "generatedAt": "2026-05-27T00:00:00.000Z",
   "source": "mock",
   "results": [
     {
       "query": "ghostnetai login",
       "title": "GhostNet AI login access",
-      "url": "https://ghostnetai-login.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
+      "url": "https://example.com/ghostnetai-login",
+      "snippet": "Mock prototype result for Day 2 capture flow.",
       "rank": 1,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai support",
-      "title": "GhostNet AI support access",
-      "url": "https://ghostnetai-support.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 2,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai verify",
-      "title": "GhostNet AI verify access",
-      "url": "https://ghostnetai-verify.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 3,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai secure portal",
-      "title": "GhostNet AI secure portal access",
-      "url": "https://ghostnetai-secure-portal.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 4,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai wallet",
-      "title": "GhostNet AI wallet access",
-      "url": "https://ghostnetai-wallet.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 5,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai account",
-      "title": "GhostNet AI account access",
-      "url": "https://ghostnetai-account.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 6,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai help center",
-      "title": "GhostNet AI help center access",
-      "url": "https://ghostnetai-help-center.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 7,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
-    },
-    {
-      "query": "ghostnetai official",
-      "title": "GhostNet AI official access",
-      "url": "https://ghostnetai-official.example.com",
-      "snippet": "Mock prototype result generated locally because Bright Data credentials were not available.",
-      "rank": 8,
-      "discoveredAt": "2026-05-26T12:08:10.620Z"
+      "discoveredAt": "2026-05-27T00:00:00.000Z"
     }
   ]
 }

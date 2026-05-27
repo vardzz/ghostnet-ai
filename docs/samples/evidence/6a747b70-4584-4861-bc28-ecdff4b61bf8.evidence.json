@@ -1,0 +1,11 @@
+{
+  "targetUrl": "https://example.com/ghostnetai-login",
+  "finalUrl": "https://example.com/ghostnetai-login",
+  "pageTitle": "",
+  "screenshotPath": "C:\\Users\\kurtjoshua\\Projects\\Hackathons\\ghostnet-ai\\docs\\samples\\evidence\\6a747b70-4584-4861-bc28-ecdff4b61bf8.png",
+  "htmlSnapshotPath": "C:\\Users\\kurtjoshua\\Projects\\Hackathons\\ghostnet-ai\\docs\\samples\\evidence\\6a747b70-4584-4861-bc28-ecdff4b61bf8.html",
+  "visibleText": [],
+  "formSelectors": [],
+  "capturedAt": "2026-05-27T05:40:43.680Z",
+  "status": "fetch_failed"
+}
