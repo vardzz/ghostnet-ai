@@ -1,48 +1,45 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-
-// Note: This is a test skeleton. You would import your actual BrandRegistration component here.
-// import BrandRegistration from '@/components/BrandRegistration';
-
-// Mock component to represent the form for the skeleton
-const MockBrandRegistration = () => (
-  <form onSubmit={(e) => { e.preventDefault(); /* simulate submission */ }}>
-    <label htmlFor="brandName">Brand Name</label>
-    <input id="brandName" name="brandName" required />
-    <label htmlFor="domains">Associated Domains</label>
-    <input id="domains" name="domains" required />
-    <button type="submit">Register Brand</button>
-  </form>
-);
+import { POST } from '@/app/api/brands/monitor/route';
 
 describe('Brand Registration Flow (Smoke Test)', () => {
-  it('renders the brand registration form correctly', () => {
-    render(<MockBrandRegistration />);
-    
-    expect(screen.getByLabelText(/Brand Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Associated Domains/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Register Brand/i })).toBeInTheDocument();
+  it('creates a brand monitor job and returns dashboard links', async () => {
+    const request = new Request('http://localhost/api/brands/monitor', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        brandName: 'Acme Corp',
+        officialDomain: 'acme.com',
+        primarySocialHandles: [
+          { platform: 'x', handle: 'acmecorp', url: 'https://x.com/acmecorp' },
+        ],
+        scanMode: 'on_demand',
+        scanFrequencyMinutes: 60,
+      }),
+    });
+
+    const response = await POST(request as never);
+    const payload = await response.json();
+
+    expect(response.status).toBe(202);
+    expect(payload.brand.brandName).toBe('Acme Corp');
+    expect(payload.brand.officialDomain).toBe('acme.com');
+    expect(payload.brand.status).toBe('active');
+    expect(payload.scan.status).toBe('queued');
+    expect(payload.scan.candidateLimit).toBeGreaterThan(0);
+    expect(payload.dashboard.liveThreatsUrl).toContain('/dashboard/threats?brand=brand_');
+    expect(payload.dashboard.brandDetailUrl).toContain('/dashboard/brands/brand_');
   });
 
-  it('allows user to input brand details and submit', async () => {
-    render(<MockBrandRegistration />);
-    
-    const brandInput = screen.getByLabelText(/Brand Name/i);
-    const domainInput = screen.getByLabelText(/Associated Domains/i);
-    const submitBtn = screen.getByRole('button', { name: /Register Brand/i });
-
-    fireEvent.change(brandInput, { target: { value: 'Acme Corp' } });
-    fireEvent.change(domainInput, { target: { value: 'acme.com' } });
-    
-    expect(brandInput).toHaveValue('Acme Corp');
-    expect(domainInput).toHaveValue('acme.com');
-
-    // Simulate submission
-    fireEvent.click(submitBtn);
-
-    // In a real component, you would await API calls or state changes
-    await waitFor(() => {
-      // e.g. expect(mockRegisterApi).toHaveBeenCalledWith({ brandName: 'Acme Corp', domains: 'acme.com' })
+  it('rejects malformed requests', async () => {
+    const request = new Request('http://localhost/api/brands/monitor', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ brandName: '', officialDomain: 'acme.com', primarySocialHandles: [] }),
     });
+
+    const response = await POST(request as never);
+    const payload = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(payload.error).toMatch(/brandName/i);
   });
 });
