@@ -65,6 +65,32 @@ GhostNet AI follows a deliberate, premium-grade triage pipeline:
 3. Use Web Unlocker to inspect pages and profile surfaces that resist normal
    retrieval.
 4. Capture evidence through the Scraping Browser with timestamped screenshots.
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Running Tests
+
+This project uses Jest for testing. You can run the test suite locally using the following commands:
+
+- Run all tests: `npm test`
+- Run tests in watch mode (ideal for development): `npm run test:watch`
+
+## Learn More
+
 5. Send the normalized evidence package to Claude for threat scoring and
    report drafting.
 6. Persist the findings in the dashboard so the next action is obvious.
