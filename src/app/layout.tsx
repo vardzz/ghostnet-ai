@@ -27,6 +27,12 @@ export const metadata: Metadata = {
   description: "Advanced AI threat monitoring and analysis platform."
 };
 
+// Use the public/GhostNet-AI.png image as the site icon (tab favicon + related icons)
+metadata.icons = {
+  icon: '/GhostNet-AI.png',
+  shortcut: '/GhostNet-AI.png',
+  apple: '/GhostNet-AI.png'
+};
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" className={`dark ${spaceGrotesk.variable} ${geistMono.variable} ${silkscreen.variable} ${geistPixelLine.variable}`} suppressHydrationWarning>
