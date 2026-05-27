@@ -12,9 +12,9 @@ Goal: Establish repo structure, lock API contracts, and produce minimal prototyp
 | ------ | -------------------------------------------- | ----------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
 | [X]    | Project bootstrap and protected branch setup | Vardz - Tech Lead / `main`, `develop`, `feature/infra-core` | None                                   | Repo structure, branch protection, baseline Next.js app, shared coding standards |
 | [X]    | Bright Data discovery prototype              | Kurt - Scraping Specialist / `feature/brightdata-pipeline`  | Brand definition from product scope    | SERP query prototype returning top suspicious results                            |
-| [x]    | Claude schema and scoring contract           | Pol - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
+| [x]    | Claude schema and scoring contract           | Zie - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
 | [X]    | Dashboard shell and navigation skeleton      | Charles - Frontend UI/UX / `feature/dashboard-ui`           | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
-| [X]    | QA matrix and sprint acceptance rules        | Zie - QA & Strategy / `feature/qa-validation`               | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
+| [X]    | QA matrix and sprint acceptance rules        | Pol - QA & Strategy / `feature/qa-validation`               | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
 
 ### Per-Task Instructions and AI Prompts (Day 1)
 
@@ -38,9 +38,9 @@ Goal: Connect discovery -> capture -> analysis -> UI with concrete artifacts and
 | ------ | ------------------------------------------- | ---------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
 | [X]    | Supabase schema and evidence storage wiring | Vardz - Tech Lead / `feature/infra-core`                   | Day 1 contract lock            | Brands and Threats tables plus evidence buckets and RLS rules |
 | [X]    | Scraping Browser capture flow               | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | SERP prototype                 | Full-page screenshot capture with safe DOM summaries          |
-| [X]    | Claude threat analysis implementation       | Pol - AI Engineer / `feature/claude-orchestration`         | Evidence packet from Kurt      | Scoring pipeline that returns validated JSON analysis         |
+| [X]    | Claude threat analysis implementation       | Zie - AI Engineer / `feature/claude-orchestration`         | Evidence packet from Kurt      | Scoring pipeline that returns validated JSON analysis         |
 | [X]    | Live threat feed UI integration             | Charles - Frontend UI/UX / `feature/dashboard-ui`          | API contract and mock payloads | Dashboard list bound to live threat data and evidence links   |
-| [X]    | Test scaffolding and E2E checkpoints        | Zie - QA & Strategy / `feature/qa-validation`              | Day 1 interfaces               | Automated smoke tests for one brand, one threat, one report   |
+| [X]    | Test scaffolding and E2E checkpoints        | Pol - QA & Strategy / `feature/qa-validation`              | Day 1 interfaces               | Automated smoke tests for one brand, one threat, one report   |
 
 ### Per-Task Instructions and AI Prompts (Day 2)
 
@@ -79,7 +79,7 @@ You are a browser automation assistant. Provide TypeScript code using Playwright
 
 #### Task: Claude threat analysis implementation
 
-- Assigned: Pol (AI Engineer) — `feature/claude-orchestration`
+- Assigned: Zie (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Implement a service that accepts the normalized evidence bundle and calls Claude with the locked prompt template.
   2.  Ensure the request times out at `ANTHROPIC_TIMEOUT_MS` and parse only JSON responses.
@@ -111,7 +111,7 @@ You are a frontend integration assistant. Provide concise React hooks and exampl
 
 #### Task: Test scaffolding and E2E checkpoints
 
-- Assigned: Zie (QA and Strategy) — `feature/qa-validation`
+- Assigned: Pol (QA and Strategy) — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Create smoke tests that assert: brand registration, a simple scan lifecycle (queued -> captured -> analyzed), and report generation gating.
   2.  Use mocked services for Bright Data and Claude to simulate success and failure cases.
@@ -134,9 +134,9 @@ Goal: Finish the core backend and legal drafting path so scans are reliable and 
 | ------ | ----------------------------------------------- | ---------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------ |
 | [ ]    | Deadline enforcement and retry policy           | Vardz - Tech Lead / `feature/infra-core`                   | Integration paths from Day 2 | Hard timeout controls and bounded retry rules                            |
 | [ ]    | Anti-bot failure handling and fallback capture  | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | Browser capture flow         | Clean failure states for blocked or partially rendered targets           |
-| [ ]    | Cease-and-desist report generator               | Pol - AI Engineer / `feature/claude-orchestration`         | Validated threat records     | Structured legal draft with evidence citations and abuse contact hints   |
+| [ ]    | Cease-and-desist report generator               | Zie - AI Engineer / `feature/claude-orchestration`         | Validated threat records     | Structured legal draft with evidence citations and abuse contact hints   |
 | [ ]    | Evidence viewer and report action panel         | Charles - Frontend UI/UX / `feature/dashboard-ui`          | Threat and report fixtures   | UI for screenshot review, report preview, and manual approval            |
-| [ ]    | Validation suite expansion and release criteria | Zie - QA & Strategy / `feature/qa-validation`              | End-to-end flows from Day 2  | Regression tests covering timeout, evidence integrity, and report gating |
+| [ ]    | Validation suite expansion and release criteria | Pol - QA & Strategy / `feature/qa-validation`              | End-to-end flows from Day 2  | Regression tests covering timeout, evidence integrity, and report gating |
 
 #### Task: Deadline enforcement and retry policy
 
@@ -172,7 +172,7 @@ Step-by-step: define the failure categories `fetch_failed`, `render_failed`, `bl
 
 #### Task: Cease-and-desist report generator
 
-- Assigned: Pol (AI Engineer) — `feature/claude-orchestration`
+- Assigned: Zie (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Build a `legalReport` JSON generator that accepts a validated `threatId` and uses only trusted evidence references.
   2.  Include the report summary, evidence citations, registrar hints, and abuse contact hints in a schema-valid JSON response.
@@ -204,7 +204,7 @@ Step-by-step: create a readable summary-report template on `/dashboard/threats` 
 
 #### Task: Validation suite expansion and release criteria
 
-- Assigned: Zie (QA and Strategy) — `feature/qa-validation`
+- Assigned: Pol (QA and Strategy) — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Expand the smoke suite to cover deadline abort, anti-bot failures, schema validation failures, and report gating.
   2.  Add regression tests for tenant isolation and evidence integrity.
@@ -228,9 +228,9 @@ Goal: Deliver the complete GhostNet AI MVP. By the end of Day 4, a user should e
 | ------ | --------------------------------------------- | ---------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------- |
 | [ ]    | Final integration polish and release gate     | Vardz - Tech Lead / `feature/infra-core`                   | All feature branches merged      | Release candidate with clean build and deploy sequence              |
 | [ ]    | Search coverage tuning and edge-case sampling | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | Production-like fixtures         | Finalized discovery patterns with safe limits and tuned filters     |
-| [ ]    | Prompt optimization and JSON validation sweep | Pol - AI Engineer / `feature/claude-orchestration`         | Realistic evidence samples       | Lower-failure-rate analysis prompt and validation guardrail set     |
+| [ ]    | Prompt optimization and JSON validation sweep | Zie - AI Engineer / `feature/claude-orchestration`         | Realistic evidence samples       | Lower-failure-rate analysis prompt and validation guardrail set     |
 | [ ]    | UI responsiveness and presentation polish     | Charles - Frontend UI/UX / `feature/dashboard-ui`          | Stable live feed and report flow | Demo-ready dashboard with mobile-safe layout and clear states       |
-| [ ]    | Final QA, launch checklist, and handoff notes | Zie - QA & Strategy / `feature/qa-validation`              | Full integrated build            | Sign-off document, known risks log, and demo verification checklist |
+| [ ]    | Final QA, launch checklist, and handoff notes | Pol - QA & Strategy / `feature/qa-validation`              | Full integrated build            | Sign-off document, known risks log, and demo verification checklist |
 
 #### Task: Final integration polish and release gate
 
@@ -266,7 +266,7 @@ Step-by-step: run the discovery prototype against a curated set of edge-case bra
 
 #### Task: Prompt optimization and JSON validation sweep
 
-- Assigned: Pol (AI Engineer) — `feature/claude-orchestration`
+- Assigned: Zie (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
   1.  Re-run the Claude prompt against the final evidence samples and make sure the JSON is stable.
   2.  Tighten the report prompt so it always returns the report schema needed for the readable template and PDF export.
@@ -298,7 +298,7 @@ Step-by-step: finish the `/dashboard` input form, redirect the user to `/dashboa
 
 #### Task: Final QA, launch checklist, and handoff notes
 
-- Assigned: Zie (QA and Strategy) — `feature/qa-validation`
+- Assigned: Pol (QA and Strategy) — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Run the final smoke tests against the complete MVP path from `/dashboard` to `/dashboard/threats`.
   2.  Verify the readable summary template, the raw JSON view, and the PDF download all work as expected.
