@@ -1,25 +1,62 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { resolve } from 'path';
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+
+import type { EvidenceBundle } from "@/lib/brightdata/scraping-browser-client";
 
 export interface SavedEvidenceRecord {
   id: string;
+  analysisState: "pending" | "needs_review";
+  failureCategory: EvidenceBundle["status"];
   evidencePath: string;
   storedAt: string;
+  evidence: EvidenceBundle;
+  blockedStatusCode?: number;
+  blockedHeaders?: Record<string, string>;
+  consoleSnippet?: string;
 }
 
-const DB_DIR = resolve('docs', 'samples');
-const DB_PATH = resolve(DB_DIR, 'db-records.json');
+export interface SaveEvidenceOptions {
+  dbPath?: string;
+  id?: string;
+}
 
-export async function saveEvidence(record: SavedEvidenceRecord): Promise<void> {
-  await mkdir(DB_DIR, { recursive: true });
+function defaultDbPath(): string {
+  return resolve("docs", "samples", "db-records.json");
+}
+
+export async function saveEvidence(
+  evidence: EvidenceBundle,
+  options: SaveEvidenceOptions = {},
+): Promise<SavedEvidenceRecord> {
+  const dbPath = options.dbPath ?? defaultDbPath();
+  const id = options.id ?? `${Date.now()}`;
+  const storedAt = new Date().toISOString();
+  const analysisState = evidence.status === "captured" ? "pending" : "needs_review";
+
+  await mkdir(dirname(dbPath), { recursive: true });
+
   let existing: SavedEvidenceRecord[] = [];
   try {
-    const raw = await readFile(DB_PATH, 'utf-8');
+    const raw = await readFile(dbPath, "utf-8");
     existing = JSON.parse(raw) as SavedEvidenceRecord[];
   } catch {
     existing = [];
   }
 
+  const record: SavedEvidenceRecord = {
+    id,
+    analysisState,
+    failureCategory: evidence.status,
+    evidencePath: evidence.htmlSnapshotPath,
+    storedAt,
+    evidence,
+    blockedStatusCode: evidence.blockedStatusCode,
+    blockedHeaders: evidence.blockedHeaders,
+    consoleSnippet: evidence.consoleSnippet,
+  };
+
   existing.push(record);
-  await writeFile(DB_PATH, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
+  await writeFile(dbPath, JSON.stringify(existing, null, 2) + "\n", "utf-8");
+
+  return record;
 }
