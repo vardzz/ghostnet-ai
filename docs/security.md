@@ -7,7 +7,7 @@ GhostNet AI handles live web proxies, browser automation credentials, and third-
 ### Storage Rules
 
 - Keep Bright Data credentials in server-only environment variables.
-- Keep Claude or Anthropic credentials in server-only environment variables.
+- Keep Gemini (Google AI) credentials in server-only environment variables.
 - Keep the Supabase service role key in server-only environment variables.
 - Use Supabase Vault for long-lived operational secrets where managed secret storage is preferred.
 - Never place service credentials in client-side code, static JSON files, or browser-exposed build artifacts.
@@ -33,7 +33,7 @@ Recommended server-side shape:
 ```ts
 interface SecretBundle {
   brightDataApiKey: string;
-  anthropicApiKey: string;
+  geminiApiKey: string;
   supabaseServiceRoleKey: string;
   evidenceBucketName: string;
   reportBucketName: string;
@@ -122,7 +122,7 @@ GhostNet AI is meant for public, defensive brand protection. The system must rem
 
 ### Legal Review Guardrails
 
-Claude-generated takedown material is a draft, not an autonomous legal decision.
+Model-generated (Gemini) takedown material is a draft, not an autonomous legal decision.
 
 Required safeguards:
 

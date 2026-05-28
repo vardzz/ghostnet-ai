@@ -2,12 +2,12 @@
  * @file src/app/api/claude/debug/route.ts
  * @description GET /api/claude/debug
  *
- * Replays Kurt's docs/samples/sample-evidence.json through the full Claude
+ * Replays Kurt's docs/samples/sample-evidence.json through the full Gemini
  * analysis pipeline. Designed for local verification without any setup.
  *
  * Query parameters:
- *   ?dry=true   → prints the built prompt WITHOUT calling Claude (safe, free)
- *   (no flag)   → makes a real Claude API call (requires ANTHROPIC_API_KEY)
+ *   ?dry=true   → prints the built prompt WITHOUT calling Gemini (safe, free)
+ *   (no flag)   → makes a real Gemini API call (requires GEMINI_API_KEY)
  *
  * Example usage:
  *   # Inspect the prompt for free:
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
   }
 
-  // ── LIVE RUN: call Claude and return full result ───────────────────────────
+  // ── LIVE RUN: call Gemini and return full result ───────────────────────────
   const debugThreatId = `debug-${Date.now()}`;
   const result = await runClaudeAnalysis(evidence);
 

@@ -1,5 +1,5 @@
 {
-  "_comment": "Invalid payload examples for ClaudeAnalysisOutput schema v1.0.0. Each entry documents the expected validation errors so reviewers and test authors know exactly what should be rejected.",
+  "_comment": "Invalid payload examples for ClaudeAnalysisOutput schema v1.0.0. Each entry documents the expected validation errors so reviewers and test authors know exactly what should be rejected. These examples are intended for use with Gemini-produced output validated against the ClaudeAnalysisOutput contract.",
   "invalidPayloads": [
     {
       "_id": "invalid-001",

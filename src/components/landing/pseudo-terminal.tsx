@@ -46,7 +46,7 @@ const COMMANDS: Record<string, string[]> = {
   stack: [
     "Frontend:  Next.js 16 + React 19",
     "Styling:   Tailwind CSS",
-    "AI Engine: Claude-3.5-Sonnet",
+    "AI Engine: Gemini-2.0-Flash",
     "Database:  Supabase / PostgreSQL",
     "Network:   Bright Data APIs",
   ],

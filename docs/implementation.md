@@ -8,7 +8,7 @@ The sprint is organized around a strict assembly line. `main` is the protected p
 | -------------------------- | ----------------------------------------------------------- | --------------------------------------- |
 | Vardz - Tech Lead          | Platform orchestration, schema design, CI, release control  | `main`, `develop`, `feature/infra-core` |
 | Kurt - Scraping Specialist | Bright Data discovery, browser automation, evidence capture | `feature/brightdata-pipeline`           |
-| Pol - AI Engineer          | Claude prompting, validation, scoring, report generation    | `feature/claude-orchestration`          |
+| Pol - AI Engineer          | Gemini prompting, validation, scoring, report generation    | `feature/claude-orchestration`          |
 | Charles - Frontend UI/UX   | Dashboard composition, live threat feed, evidence views     | `feature/dashboard-ui`                  |
 | Zie - QA & Strategy        | Test matrix, validation criteria, release readiness         | `feature/qa-validation`                 |
 
@@ -34,11 +34,11 @@ All secrets are server-side unless explicitly marked for client read-only access
 - `SUPABASE_STORAGE_BUCKET_EVIDENCE` - bucket name for screenshots and HTML snapshots
 - `SUPABASE_STORAGE_BUCKET_REPORTS` - bucket name for generated legal packages
 
-#### Claude / Anthropic
+#### Gemini (Google AI)
 
-- `ANTHROPIC_API_KEY` - Claude API credential
-- `ANTHROPIC_MODEL` - model name for analysis and report generation
-- `ANTHROPIC_TIMEOUT_MS` - maximum request budget for one inference pass
+- `GEMINI_API_KEY` - Gemini API credential (placed in URL, not headers)
+- `GEMINI_MODEL` - model name for analysis and report generation (e.g. `gemini-2.0-flash`)
+- Request timeout is hardcoded to 15000 ms; do not rely on an env var for per-request timeouts.
 
 #### Application Runtime
 
@@ -131,9 +131,9 @@ Safe parsing rules:
 - Do not attempt bypass logic that would cross site boundary or authentication protections.
 - Only read and store what is already public and visible.
 
-### Step 3: Feeding Text Vectors and HTML Nodes Into Claude
+### Step 3: Feeding Text Vectors and HTML Nodes Into Gemini
 
-Claude receives the evidence bundle after it has been normalized. The model should never be asked to infer from raw noise when a compact evidence packet is sufficient.
+The model receives the evidence bundle after it has been normalized. The model should never be asked to infer from raw noise when a compact evidence packet is sufficient.
 
 The wrapper should construct a prompt that includes:
 
@@ -186,7 +186,7 @@ The 2-minute ceiling is a hard ceiling, not an aspirational one.
 Controls:
 
 - a global scan deadline stored at job creation time
-- per-request timeouts for Bright Data and Claude calls
+- per-request timeouts for Bright Data and Gemini calls
 - early exit when the remaining budget cannot support another fetch
 - bounded retries with no exponential retry storm
 - immediate persistence of partial evidence before returning
@@ -235,11 +235,11 @@ Recommended fallback status values:
 Use this checklist immediately after reading the docs so the team can start building in parallel without blocking each other.
 
 1. Create the protected branch structure and lock `main` plus `develop`.
-2. Initialize the Next.js TypeScript project and install Supabase, Anthropic, and Bright Data client dependencies.
+2. Initialize the Next.js TypeScript project and install Supabase and Bright Data client dependencies. No Anthropic SDK is required for Gemini — native fetch is used.
 3. Define the Brand and Threat database tables plus storage buckets for evidence and reports.
 4. Implement request validation schemas for all three API endpoints.
 5. Build the Bright Data SERP wrapper and one browser evidence capture proof of concept.
-6. Define the Claude response schema and add a strict JSON validation layer.
+6. Define the model response schema and add a strict JSON validation layer.
 7. Scaffold the dashboard shell with a live threats list and evidence side panel.
 8. Write the QA acceptance matrix for scoring accuracy, screenshot integrity, and timeout behavior.
 9. Add environment variable validation at server startup so missing secrets fail fast.

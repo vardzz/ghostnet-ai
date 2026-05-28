@@ -1,3 +1,73 @@
+## What This Project Does
+
+GhostNet AI is built to catch brand impersonation before it becomes a customer
+incident. It combines Bright Data's live web infrastructure with Gemini-based
+analysis to automate the full threat triage loop:
+
+## Architecture Overview
+
+User -> Next.js API routes -> Bright Data (SERP, Web Unlocker, Scraping Browser) -> Supabase (Postgres + Storage) -> Gemini (Google AI) analysis -> Live dashboard.
+
+## Core Capabilities
+
+- Real-time discovery across search engines and public web surfaces.
+- Typosquat detection using character swaps, added words, and homoglyphs.
+- Phishing and spoofed-profile analysis with structured scoring.
+- Screenshot-backed evidence bundles for legal review.
+- Auto-drafted takedown notices and abuse-contact hints.
+- A dashboard built for live monitoring, not static reporting.
+
+## Tech Stack
+
+- Next.js 16 with React 19 and TypeScript.
+- Bright Data SERP API, Web Unlocker, and Scraping Browser for web access.
+- Gemini (Google AI) for threat classification, urgency scoring, and report generation.
+- Supabase for persistence, storage, and operational metadata.
+
+## Learn More
+
+5. Send the normalized evidence package to Gemini 2.0 Flash (Google AI) for threat scoring and
+   report drafting.
+6. Persist the findings in the dashboard so the next action is obvious.
+
+## Detection Workflow
+
+GhostNet AI follows a deliberate, premium-grade triage pipeline:
+
+1. Input a brand identity: brand name, official domain, and known social
+   handles.
+2. Run targeted SERP searches to surface suspicious results and domain
+   anomalies.
+3. Use Web Unlocker to inspect pages and profile surfaces that resist normal
+   retrieval.
+4. Capture evidence through the Scraping Browser with timestamped screenshots.
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+## Running Tests
+
+This project uses Jest for testing. You can run the test suite locally using the following commands:
+
+- Run all tests: `npm test`
+- Run tests in watch mode (ideal for development): `npm run test:watch`
+
+## Closing Note
+
+GhostNet AI is built to make impersonation response feel immediate, credible,
+and operationally clean. It surfaces the right evidence, packages it properly, and leaves the next decision ready for a security or legal team.
+
 <div align="center">
 
 ```text
@@ -22,7 +92,7 @@ GhostNet AI is a hackathon project for the Web Data UNLOCKED event under the Sec
 ## What This Project Does
 
 GhostNet AI is built to catch brand impersonation before it becomes a customer
-incident. It combines Bright Data's live web infrastructure with Claude-based
+incident. It combines Bright Data's live web infrastructure with Gemini-based
 analysis to automate the full threat triage loop:
 
 - Searches Google and Bing for high-signal brand abuse queries such as login,
@@ -38,7 +108,7 @@ The result is a live threat dashboard that compresses what used to take days of 
 
 ## Architecture Overview
 
-User -> Next.js API routes -> Bright Data (SERP, Web Unlocker, Scraping Browser) -> Supabase (Postgres + Storage) -> Claude analysis -> Live dashboard.
+User -> Next.js API routes -> Bright Data (SERP, Web Unlocker, Scraping Browser) -> Supabase (Postgres + Storage) -> Gemini analysis -> Live dashboard.
 
 Execution is time-boxed to 120 seconds and prioritizes evidence preservation with partial results when time is low.
 
@@ -91,7 +161,7 @@ This project uses Jest for testing. You can run the test suite locally using the
 
 ## Learn More
 
-5. Send the normalized evidence package to Claude for threat scoring and
+5. Send the normalized evidence package to Gemini 2.0 Flash (Google AI) for threat scoring and
    report drafting.
 6. Persist the findings in the dashboard so the next action is obvious.
 
@@ -108,7 +178,7 @@ This project uses Jest for testing. You can run the test suite locally using the
 
 - Next.js 16 with React 19 and TypeScript.
 - Bright Data SERP API, Web Unlocker, and Scraping Browser for web access.
-- Claude for threat classification, urgency scoring, and report generation.
+- Gemini for threat classification, urgency scoring, and report generation.
 - Supabase for persistence, storage, and operational metadata.
 
 ## Project Structure

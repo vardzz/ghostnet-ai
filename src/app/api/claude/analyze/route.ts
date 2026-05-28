@@ -2,7 +2,7 @@
  * @file src/app/api/claude/analyze/route.ts
  * @description POST /api/claude/analyze
  *
- * Accepts a threatId and an evidence bundle, runs Claude analysis, persists
+ * Accepts a threatId and an evidence bundle, runs Gemini analysis, persists
  * the result, and returns the outcome envelope.
  *
  * Request body:
@@ -55,6 +55,25 @@ function isValidBody(body: unknown): body is AnalyzeRequestBody {
   return true;
 }
 
+function mapAnalysisThreatType(
+  threatType?: string
+): AnalyzeRequestBody["threatContext"] extends infer Context
+  ? Context extends undefined
+    ? never
+    : "typosquat" | "phishing" | "spoofed_social" | "impersonation" | "lookalike_domain" | "benign"
+  : never {
+  switch (threatType) {
+    case "phishing":
+      return "phishing";
+    case "social_engineering":
+      return "spoofed_social";
+    case "unknown":
+      return "benign";
+    default:
+      return "benign";
+  }
+}
+
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -100,7 +119,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (threatContext) {
     await saveEvidence({
       ...threatContext,
-      threatType: result.analysis?.threatType ?? "benign",
+      threatType: mapAnalysisThreatType(result.analysis?.threatType),
       threatScore: result.analysis?.threatScore ?? 0,
       confidenceScore: result.analysis?.confidence ?? 0,
       urgencyLevel: result.analysis?.urgencyLevel ?? "low",

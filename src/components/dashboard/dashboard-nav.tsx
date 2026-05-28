@@ -9,11 +9,6 @@ export function DashboardNav() {
           <span className="text-muted-foreground">{">"}</span>
           <span className="font-pixel tracking-wider text-foreground">GHOSTNET_AI</span>
         </Link>
-        <div className="flex items-center gap-4">
-          <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center border border-border">
-            <User size={16} className="text-muted-foreground" />
-          </div>
-        </div>
       </div>
     </header>
   );

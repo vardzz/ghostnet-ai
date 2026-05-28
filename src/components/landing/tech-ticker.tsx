@@ -10,7 +10,7 @@ const TECH_ITEMS = [
   "Bright Data SERP API",
   "Web Unlocker",
   "Scraping Browser",
-  "Claude-3.5-Sonnet",
+  "Gemini-2.0-Flash",
   "PostgreSQL",
 ]
 

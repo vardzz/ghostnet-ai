@@ -113,14 +113,14 @@ export const techSections: TechSection[] = [
     id: "compiler-design",
     number: "04",
     title: "Scoring",
-    subtitle: "Claude Analysis",
+    subtitle: "Gemini Analysis",
     description:
-      "Sends the normalized evidence package to Claude for threat classification, urgency scoring, and structured phishing detection.",
+      "Sends the normalized evidence package to Gemini (Google AI) for threat classification, urgency scoring, and structured phishing detection.",
     ascii: `
     Evidence Data
         │
     ┌───▼───┐
-    │ CLAUDE│ ──> Analysis
+    │ GEMINI│ ──> Analysis
     └───┬───┘
     ┌───▼────┐
     │ SCORE  │ ──> Confidence
@@ -133,7 +133,7 @@ export const techSections: TechSection[] = [
     │ EXTRACT      │ ──> Contacts
     └──────────────┘`,
     specs: [
-      { label: "Model", value: "Claude-3.5-Sonnet" },
+      { label: "Model", value: "gemini-2.0-flash" },
       { label: "Detection", value: "Phishing / Fraud" },
       { label: "Scoring", value: "0-100 (Confidence)" },
       { label: "Latency", value: "~4.5s" },

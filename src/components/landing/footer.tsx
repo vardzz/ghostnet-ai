@@ -94,7 +94,7 @@ export function Footer() {
                   "Tailwind CSS",
                   "Framer Motion",
                   "Bright Data",
-                  "Claude",
+                  "Gemini",
                 ].map(
                   (tech) => (
                     <span

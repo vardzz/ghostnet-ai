@@ -3,7 +3,7 @@ const REQUIRED_ENV_VARS = [
   'SUPABASE_SERVICE_ROLE_KEY',
   'BRIGHT_DATA_SERP_API_KEY',
   'BRIGHT_DATA_WEB_UNLOCKER_PROXY',
-  'CLAUDE_API_KEY'
+  'GEMINI_API_KEY'
 ];
 
 const missingVars = REQUIRED_ENV_VARS.filter((envVar) => !process.env[envVar]);

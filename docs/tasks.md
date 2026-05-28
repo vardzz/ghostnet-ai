@@ -12,7 +12,7 @@ Goal: Establish repo structure, lock API contracts, and produce minimal prototyp
 | ------ | -------------------------------------------- | ----------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
 | [X]    | Project bootstrap and protected branch setup | Vardz - Tech Lead / `main`, `develop`, `feature/infra-core` | None                                   | Repo structure, branch protection, baseline Next.js app, shared coding standards |
 | [X]    | Bright Data discovery prototype              | Kurt - Scraping Specialist / `feature/brightdata-pipeline`  | Brand definition from product scope    | SERP query prototype returning top suspicious results                            |
-| [x]    | Claude schema and scoring contract           | Zie - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
+| [x]    | Gemini schema and scoring contract           | Zie - AI Engineer / `feature/claude-orchestration`          | Evidence shape from scraping prototype | Strict JSON schema for threat analysis and report output                         |
 | [X]    | Dashboard shell and navigation skeleton      | Charles - Frontend UI/UX / `feature/dashboard-ui`           | API contract draft                     | Visual shell with brand panel, live threat list, and evidence drawer             |
 | [X]    | QA matrix and sprint acceptance rules        | Pol - QA & Strategy / `feature/qa-validation`               | Product scope and target architecture  | Test checklist, release criteria, and pass/fail thresholds                       |
 
@@ -38,7 +38,7 @@ Goal: Connect discovery -> capture -> analysis -> UI with concrete artifacts and
 | ------ | ------------------------------------------- | ---------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
 | [X]    | Supabase schema and evidence storage wiring | Vardz - Tech Lead / `feature/infra-core`                   | Day 1 contract lock            | Brands and Threats tables plus evidence buckets and RLS rules |
 | [X]    | Scraping Browser capture flow               | Kurt - Scraping Specialist / `feature/brightdata-pipeline` | SERP prototype                 | Full-page screenshot capture with safe DOM summaries          |
-| [X]    | Claude threat analysis implementation       | Zie - AI Engineer / `feature/claude-orchestration`         | Evidence packet from Kurt      | Scoring pipeline that returns validated JSON analysis         |
+| [X]    | Gemini threat analysis implementation       | Zie - AI Engineer / `feature/claude-orchestration`         | Evidence packet from Kurt      | Scoring pipeline that returns validated JSON analysis         |
 | [X]    | Live threat feed UI integration             | Charles - Frontend UI/UX / `feature/dashboard-ui`          | API contract and mock payloads | Dashboard list bound to live threat data and evidence links   |
 | [X]    | Test scaffolding and E2E checkpoints        | Pol - QA & Strategy / `feature/qa-validation`              | Day 1 interfaces               | Automated smoke tests for one brand, one threat, one report   |
 
@@ -77,12 +77,12 @@ AI Prompt (copy/paste):
 You are a browser automation assistant. Provide TypeScript code using Playwright (or Puppeteer) that opens a URL in a new context, waits for network idle or 10s, takes a full-page screenshot, saves the HTML snapshot, extracts visible headings and form selectors (max 20), and uploads both files to Supabase storage. Show how to call the function and handle timeouts and blocked pages.
 ```
 
-#### Task: Claude threat analysis implementation
+#### Task: Gemini threat analysis implementation
 
 - Assigned: Zie (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
-  1.  Implement a service that accepts the normalized evidence bundle and calls Claude with the locked prompt template.
-  2.  Ensure the request times out at `ANTHROPIC_TIMEOUT_MS` and parse only JSON responses.
+  1.  Implement a service that accepts the normalized evidence bundle and calls Gemini (Google AI) with the locked prompt template.
+  2.  Ensure the request times out at 15s (hardcoded) and parse only JSON responses.
   3.  Validate the JSON against the schema; if invalid, mark the threat `needs_review` and attach the raw model output.
   4.  On success, write scores and state transitions to `threats` table.
   5.  Provide a debug endpoint that replays the sample evidence through the pipeline.
@@ -90,7 +90,7 @@ You are a browser automation assistant. Provide TypeScript code using Playwright
 AI Prompt (copy/paste):
 
 ```
-You are an AI integration assistant. Write a TypeScript service that takes an evidence bundle, calls Claude with the provided prompt template, enforces a 15s timeout, and validates the returned JSON against the schema. If validation fails, set `analysisState` to `needs_review`; if success, write the parsed values (threatScore, confidenceScore, etc.) to the database. Provide error handling and a replay endpoint for testing.
+You are an AI integration assistant. Write a TypeScript service that takes an evidence bundle, calls Gemini (Google AI) with the provided prompt template, enforces a 15s timeout, and validates the returned JSON against the schema. If validation fails, set `analysisState` to `needs_review`; if success, write the parsed values (threatScore, confidenceScore, etc.) to the database. Provide error handling and a replay endpoint for testing.
 ```
 
 #### Task: Live threat feed UI integration
@@ -114,14 +114,14 @@ You are a frontend integration assistant. Provide concise React hooks and exampl
 - Assigned: Pol (QA and Strategy) — `feature/qa-validation`
 - Strict instructions (junior-level):
   1.  Create smoke tests that assert: brand registration, a simple scan lifecycle (queued -> captured -> analyzed), and report generation gating.
-  2.  Use mocked services for Bright Data and Claude to simulate success and failure cases.
+  2.  Use mocked services for Bright Data and Gemini to simulate success and failure cases.
   3.  Add a CI job that runs the smoke tests on PRs.
   4.  Document how to run tests locally.
 
 AI Prompt (copy/paste):
 
 ```
-You are a QA automation assistant. Provide Jest-based test skeletons for: brand registration flow, scan lifecycle (mocking external calls), and report generation (including model failure path). Include setup instructions and sample mocks for Bright Data and Claude.
+You are a QA automation assistant. Provide Jest-based test skeletons for: brand registration flow, scan lifecycle (mocking external calls), and report generation (including model failure path). Include setup instructions and sample mocks for Bright Data and Gemini.
 ```
 
 ---
@@ -183,7 +183,7 @@ AI Prompt (copy/paste):
 
 ```
 You are an AI engineer helping a junior developer generate a takedown summary report.
-Step-by-step: accept a validated `threatId`, fetch only verified evidence and metadata from the database, call Claude with a tight prompt that returns JSON only, validate the response against the report schema, and store the `legalReport` record. If validation fails, mark the result as `review_required` and keep the raw output. Also provide a preview endpoint that returns the generated JSON for manual review.
+Step-by-step: accept a validated `threatId`, fetch only verified evidence and metadata from the database, call Gemini with a tight prompt that returns JSON only, validate the response against the report schema, and store the `legalReport` record. If validation fails, mark the result as `review_required` and keep the raw output. Also provide a preview endpoint that returns the generated JSON for manual review.
 ```
 
 #### Task: Evidence viewer and report action panel
@@ -215,7 +215,7 @@ AI Prompt (copy/paste):
 
 ```
 You are a QA strategist helping a junior developer expand the validation suite.
-Step-by-step: add tests for deadline cancellation, anti-bot failure handling, Claude schema validation errors, tenant isolation, and report gating. Include a clear Day 3 pass/fail checklist and a short runbook for reproducing failures locally. Keep the tests simple, deterministic, and focused on the MVP flow.
+Step-by-step: add tests for deadline cancellation, anti-bot failure handling, schema validation errors, tenant isolation, and report gating. Include a clear Day 3 pass/fail checklist and a short runbook for reproducing failures locally. Keep the tests simple, deterministic, and focused on the MVP flow.
 ```
 
 ---
@@ -268,7 +268,7 @@ Step-by-step: run the discovery prototype against a curated set of edge-case bra
 
 - Assigned: Zie (AI Engineer) — `feature/claude-orchestration`
 - Strict instructions (junior-level):
-  1.  Re-run the Claude prompt against the final evidence samples and make sure the JSON is stable.
+  1.  Re-run the Gemini prompt against the final evidence samples and make sure the JSON is stable.
   2.  Tighten the report prompt so it always returns the report schema needed for the readable template and PDF export.
   3.  Add a short mapping document of common failure modes and the prompt fix for each one.
   4.  Commit the final prompt version and keep the preview route aligned with it.

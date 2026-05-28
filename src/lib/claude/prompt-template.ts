@@ -1,6 +1,6 @@
 /**
  * @file prompt-template.ts
- * @description Locked system prompt and prompt-builder for Claude threat analysis.
+ * @description Locked system prompt and prompt-builder for Gemini (Google AI) threat analysis.
  *
  * The SYSTEM_PROMPT is version-pinned. Any change that alters response shape
  * MUST be accompanied by a schemaVersion bump in ClaudeAnalysisOutput and
@@ -10,7 +10,7 @@
 // ─── System Prompt (locked) ───────────────────────────────────────────────────
 
 /**
- * The invariant system prompt sent to Claude on every analysis request.
+ * The invariant system prompt sent to the model on every analysis request.
  * It establishes the model's role, output contract, and hard constraints.
  */
 export const SYSTEM_PROMPT = `
@@ -52,7 +52,7 @@ HARD RULES:
 
 /**
  * EvidencePacket describes the raw intelligence gathered by the
- * BrightData pipeline before it is handed off to Claude.
+ * BrightData pipeline before it is handed off to Gemini for analysis.
  */
 export interface EvidencePacket {
   /** Unique identifier for this evidence collection run. */
@@ -70,7 +70,7 @@ export interface EvidencePacket {
 
 /**
  * Builds the user-turn message that is appended after the system prompt.
- * Injects the serialised evidence packet and reminds Claude to return
+ * Injects the serialised evidence packet and reminds the model to return
  * only valid JSON.
  *
  * @param evidence - The structured evidence packet to analyse.

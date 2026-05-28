@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://ghostnet-ai.dev/schemas/claude-analysis-output/1.0.0",
   "title": "ClaudeAnalysisOutput",
-  "description": "Machine-parseable threat analysis result returned by the Claude AI engine. Schema version 1.0.0 — do not modify field names or types without bumping schemaVersion and getting sign-off from the AI Engineering lead.",
+  "description": "Machine-parseable threat analysis result returned by the Gemini (Google AI) engine and normalized to the ClaudeAnalysisOutput contract. Schema version 1.0.0 — do not modify field names or types without bumping schemaVersion and getting sign-off from the AI Engineering lead.",
   "type": "object",
   "required": [
     "schemaVersion",

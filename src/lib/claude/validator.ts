@@ -1,6 +1,6 @@
 /**
  * @file validator.ts
- * @description Runtime validator for ClaudeAnalysisOutput payloads.
+ * @description Runtime validator for ClaudeAnalysisOutput payloads (produced by Gemini).
  *
  * Uses the JSON Schema defined in docs/samples/claude-schema/schema.json
  * as the source of truth. The inline schema below is kept in sync manually;
@@ -39,7 +39,7 @@ const ISO_8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 // ─── Validator ────────────────────────────────────────────────────────────────
 
 /**
- * Validates an unknown value against the ClaudeAnalysisOutput contract.
+ * Validates an unknown value against the ClaudeAnalysisOutput contract (expected from Gemini).
  *
  * This is intentionally a pure structural/semantic validator — it does NOT
  * make network calls or load the JSON Schema file at runtime, keeping the

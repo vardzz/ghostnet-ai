@@ -25,7 +25,7 @@ Supabase Storage + Postgres
   |-- Evidence bucket for screenshots and HTML snapshots
   |
   v
-Claude AI Analysis Layer
+Model Analysis Layer (Gemini 2.0 Flash)
   |-- evidence normalization
   |-- threat/urgency scoring
   |-- JSON schema validation
@@ -46,7 +46,7 @@ The runtime budget is intentionally tight so the system behaves like a productio
 - Discovery and search: 5 to 10 seconds
 - Bright Data fetch and render: 20 to 40 seconds
 - Screenshot capture and persistence: 10 to 15 seconds
-- Claude analysis and validation: 10 to 20 seconds
+- Gemini analysis and validation: 10 to 20 seconds
 - Database writes, event fanout, and dashboard refresh: 2 to 5 seconds
 - Hard stop: 120 seconds total wall clock time
 
@@ -198,7 +198,7 @@ interface CrawledEvidence {
 6. Scraping Browser renders the target, waits for stability, and captures the screenshot.
 7. Raw HTML and screenshots are stored in Supabase Storage with immutable filenames.
 8. Metadata is inserted or updated in the Threats table.
-9. Claude receives the normalized evidence package and returns a strict JSON analysis object.
+9. The model receives the normalized evidence package and returns a strict JSON analysis object.
 10. The JSON parser validates the response, computes the final threat state, and updates the record.
 11. The dashboard polls or subscribes to live changes and reflects the new status immediately.
 
@@ -215,9 +215,9 @@ Raw HTML must be treated as evidence, not as display content. The pipeline shoul
 
 This preserves the chain of custody and allows legal review to inspect exactly what was observed at crawl time.
 
-### 3.3 Claude JSON Validation Parser
+### 3.3 Model JSON Validation Parser
 
-Claude is used as a reasoning layer, but the application must never trust free-form text directly. The response should conform to a locked JSON schema that includes:
+The model is used as a reasoning layer, but the application must never trust free-form text directly. The response should conform to a locked JSON schema that includes:
 
 - `threatScore`
 - `confidenceScore`
@@ -260,7 +260,7 @@ A threat should move through a clear state machine:
 
 - `discovered` - found by Bright Data
 - `captured` - screenshot and HTML saved
-- `analyzing` - queued for Claude reasoning
+- `analyzing` - queued for Gemini reasoning
 - `validated` - passed JSON validation
 - `needs_review` - partial confidence or missing legal signal
 - `report_ready` - ready for legal export

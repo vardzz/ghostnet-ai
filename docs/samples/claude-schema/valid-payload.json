@@ -1,5 +1,5 @@
 {
-  "_comment": "Valid payload example for ClaudeAnalysisOutput schema v1.0.0. This payload must pass validateClaudeOutput() without errors.",
+  "_comment": "Valid payload example for ClaudeAnalysisOutput schema v1.0.0. This payload (produced by Gemini) must pass validateClaudeOutput() without errors.",
   "schemaVersion": "1.0.0",
   "analysedAt": "2026-05-26T13:00:00.000Z",
   "threatScore": 8.75,

@@ -1,14 +1,14 @@
 /**
  * @file analysis-service.ts
  * @description Core Day 2 service: accepts a normalised evidence bundle, calls
- * Claude using the locked prompt template, enforces ANTHROPIC_TIMEOUT_MS,
+ * Gemini using the locked prompt template, enforces a hardcoded timeout,
  * validates the JSON response, and returns a typed result envelope.
  *
  * This function NEVER throws — all failure modes are captured in the returned
  * AnalysisResult and callers decide how to surface them.
  */
 
-import Anthropic from "@anthropic-ai/sdk";
+// Replaced Anthropic SDK with native fetch to call Google Gemini 2.0 Flash
 import { buildAnalysisPrompt, SYSTEM_PROMPT } from "./prompt-template";
 import { validateClaudeOutput } from "./validator";
 import type { EvidencePacket } from "./prompt-template";
@@ -23,18 +23,18 @@ export type AnalysisState = "success" | "needs_review";
 export interface AnalysisResult {
   /** Whether the analysis succeeded and passed schema validation. */
   analysisState: AnalysisState;
-  /** Parsed and validated Claude output (present only when state is "success"). */
+  /** Parsed and validated model output (present only when state is "success"). */
   analysis?: ClaudeAnalysisOutput;
   /** Validation errors when state is "needs_review" due to schema mismatch. */
   validationErrors?: string[];
   /**
    * Raw text from Claude (present when parsing/validation failed so reviewers
    * can inspect what the model actually returned).
-   */
+  */
   rawModelOutput?: string;
   /** Human-readable reason for failure (present when state is "needs_review"). */
   reason?: string;
-  /** Wall-clock milliseconds taken by the Claude API call. */
+  /** Wall-clock milliseconds taken by the model API call. */
   durationMs: number;
 }
 
@@ -45,14 +45,13 @@ export interface AnalysisResult {
  * Must be called inside a request handler (Next.js edge runtime guard).
  */
 function getTimeoutMs(): number {
-  const raw = process.env.ANTHROPIC_TIMEOUT_MS;
-  const parsed = raw ? parseInt(raw, 10) : NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 15_000;
+  // Hardcoded per migration requirements
+  return 15_000;
 }
 
 /**
  * Attempts to extract a JSON object from a raw model reply.
- * Claude sometimes wraps JSON in markdown fences even when told not to;
+ * Models sometimes wrap JSON in markdown fences even when told not to;
  * this strips them if present.
  */
 function extractJson(raw: string): string {
@@ -65,7 +64,7 @@ function extractJson(raw: string): string {
 // ─── Main Service ─────────────────────────────────────────────────────────────
 
 /**
- * Calls Claude with the evidence packet, enforces the configured timeout,
+ * Calls the model with the evidence packet, enforces the configured timeout,
  * and returns a structured AnalysisResult.
  *
  * @param evidence - The normalised evidence bundle from the scraping pipeline.
@@ -76,55 +75,83 @@ export async function runClaudeAnalysis(
 ): Promise<AnalysisResult> {
   const startedAt = Date.now();
 
-  // ── Build the Anthropic client ────────────────────────────────────────────
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // ── Prepare Gemini call ───────────────────────────────────────────────────
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return {
       analysisState: "needs_review",
-      reason: "ANTHROPIC_API_KEY is not configured",
+      reason: "GEMINI_API_KEY is not configured",
       durationMs: Date.now() - startedAt,
     };
   }
 
   const timeoutMs = getTimeoutMs();
-  const client = new Anthropic({ apiKey, timeout: timeoutMs });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-  // ── Call Claude ───────────────────────────────────────────────────────────
+  // Build Gemini request body
+  const userPrompt = buildAnalysisPrompt(evidence);
+  const requestBody = {
+    contents: [
+      {
+        parts: [
+          {
+            text: userPrompt,
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+    },
+  };
+
   let rawText: string;
   try {
-    const message = await client.messages.create({
-      model: "claude-3-5-haiku-20241022",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: buildAnalysisPrompt(evidence),
-        },
-      ],
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
     });
 
-    // Extract text content from the first content block
-    const block = message.content[0];
-    if (!block || block.type !== "text") {
+    clearTimeout(timeout);
+
+    if (!resp.ok) {
+      const bodyText = await resp.text().catch(() => "<unreadable>");
       return {
         analysisState: "needs_review",
-        reason: "Claude returned a non-text content block",
-        rawModelOutput: JSON.stringify(message.content),
+        reason: `Gemini API error: ${resp.status} ${resp.statusText}`,
+        rawModelOutput: bodyText,
         durationMs: Date.now() - startedAt,
       };
     }
-    rawText = block.text;
-  } catch (err: unknown) {
-    const isTimeout =
-      err instanceof Error &&
-      (err.message.includes("timeout") || err.message.includes("timed out") || err.name === "APITimeoutError");
 
+    const data = await resp.json();
+
+    // Extract the raw text from Gemini response
+    const candidate = data?.candidates?.[0];
+    if (!candidate || !candidate.content || !candidate.content.parts || !candidate.content.parts[0]) {
+      return {
+        analysisState: "needs_review",
+        reason: "Gemini returned an unexpected response shape",
+        rawModelOutput: JSON.stringify(data),
+        durationMs: Date.now() - startedAt,
+      };
+    }
+
+    rawText = candidate.content.parts[0].text;
+  } catch (err: unknown) {
+    clearTimeout(timeout);
+    const isTimeout = err instanceof Error && (err.name === "AbortError" || (err as Error).message?.includes("timeout"));
     return {
       analysisState: "needs_review",
       reason: isTimeout
-        ? `Claude request timed out after ${timeoutMs}ms`
-        : `Claude API error: ${err instanceof Error ? err.message : String(err)}`,
+        ? `Gemini request timed out after ${timeoutMs}ms`
+        : `Gemini API error: ${err instanceof Error ? err.message : String(err)}`,
       durationMs: Date.now() - startedAt,
     };
   }
@@ -136,7 +163,7 @@ export async function runClaudeAnalysis(
   } catch {
     return {
       analysisState: "needs_review",
-      reason: "Claude response was not valid JSON",
+      reason: "Model response was not valid JSON",
       rawModelOutput: rawText,
       durationMs: Date.now() - startedAt,
     };
@@ -149,7 +176,7 @@ export async function runClaudeAnalysis(
       analysisState: "needs_review",
       validationErrors: validation.errors,
       rawModelOutput: rawText,
-      reason: "Claude output failed schema validation",
+      reason: "Model output failed schema validation",
       durationMs: Date.now() - startedAt,
     };
   }
