@@ -23,7 +23,7 @@ const silkscreen = Silkscreen({
 const geistPixelLine = GeistPixelLine;
 
 export const metadata: Metadata = {
-  title: "GhostNet AI",
+  title: "GhostNet",
   description: "Advanced AI threat monitoring and analysis platform."
 };
 
