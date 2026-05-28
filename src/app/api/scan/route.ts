@@ -35,6 +35,32 @@ export async function POST(req: NextRequest) {
       return true;
     });
 
+    // DEBUG: expose raw scraped results when `debug=1` query param set
+    const url = new URL(req.url);
+    const debug = url.searchParams.get("debug") === "1";
+
+    if (debug) {
+      // Create a fetch wrapper that captures responses for debugging (no secrets leaked)
+      const captured: Array<{ url: string; status: number; bodySnippet: string }> = [];
+      const fetchImpl: typeof fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+        const res = await fetch(input, init as RequestInit);
+        let text = "<unreadable>";
+        try {
+          text = await res.clone().text();
+        } catch {
+          // ignore
+        }
+
+        captured.push({ url: String(input), status: res.status, bodySnippet: text.slice(0, 1000) });
+        return res;
+      };
+
+      const google = await discoverSerpEvidence({ brandName, limit: 10, fetchImpl });
+      const bing = await discoverSerpEvidence({ brandName, limit: 8, fetchImpl });
+
+      return NextResponse.json({ debug: true, endpoint: process.env.BRIGHTDATA_SERP_ENDPOINT, hasApiKey: !!(process.env.BRIGHTDATA_API_KEY ?? process.env.BRIGHT_DATA_SERP_API_KEY), googleCount: google.length, bingCount: bing.length, google, bing, captured });
+    }
+
     const threatReport = await analyzeWithGemini(brandName, deduplicated);
 
     return NextResponse.json(threatReport);
