@@ -181,9 +181,11 @@ export function SectionKernel({ section }: { section: TechSection }) {
               Architecture Schematic
             </span>
           </div>
-          <pre className="overflow-x-auto p-6 font-mono text-xs leading-relaxed text-muted-foreground">
-            {section.ascii}
-          </pre>
+          <div className="flex justify-center overflow-x-auto p-6">
+            <pre className="font-mono text-xs leading-relaxed text-muted-foreground">
+              {section.ascii}
+            </pre>
+          </div>
         </div>
       </motion.div>
     </div>
