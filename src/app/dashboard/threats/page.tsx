@@ -165,7 +165,14 @@ export default function ThreatsPage() {
                 </span>
               </div>
 
-              <p className="text-sm font-bold mb-1 break-all">{threat.url}</p>
+              <a
+                href={threat.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-bold mb-1 break-all hover:underline cursor-pointer inline-block"
+              >
+                {threat.url}
+              </a>
               <p className="text-xs text-gray-400 mb-4">{threat.title}</p>
 
               <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -219,7 +226,14 @@ export default function ThreatsPage() {
           <div className="flex flex-col gap-2 mb-8">
             {report.safeDomainsList.map((domain, index) => (
               <div key={index} className="border border-gray-700 p-3">
-                <p className="text-sm text-green-400 break-all mb-1">{domain.url}</p>
+                <a
+                  href={domain.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-green-400 break-all mb-1 hover:underline cursor-pointer inline-block"
+                >
+                  {domain.url}
+                </a>
                 <p className="text-xs text-gray-400">{domain.reason}</p>
               </div>
             ))}
