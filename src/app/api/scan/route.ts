@@ -43,6 +43,14 @@ export async function POST(req: NextRequest) {
 
     const threatReport = await analyzeWithGemini(brandName, evidenceResults);
 
+    if (threatReport && threatReport.scanSummary) {
+      threatReport.scanSummary.scanDate = new Date().toLocaleDateString("en-US", {
+        month: "long",
+        day: "2-digit",
+        year: "numeric",
+      });
+    }
+
     return NextResponse.json(threatReport);
   } catch (err) {
     return NextResponse.json(
