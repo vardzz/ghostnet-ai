@@ -15,7 +15,7 @@ const COMMANDS: Record<string, string[]> = {
     "  stack      - Show tech stack",
     "  clear      - Clear terminal",
     "  ascii      - Show ASCII art",
-    "  v0         - ...",
+    "  dev        - About the developers",
   ],
   sections: [
     "01  Discovery",
@@ -54,31 +54,22 @@ const COMMANDS: Record<string, string[]> = {
   ],
   ascii: [
     "",
-    "  ███╗   ███╗ ██████╗ ███╗   ██╗ ██████╗",
-    "  ████╗ ████║██╔═══██╗████╗  ██║██╔═══██╗",
-    "  ██╔████╔██║██║   ██║██╔██╗ ██║██║   ██║",
-    "  ██║╚██╔╝██║██║   ██║██║╚██╗██║██║   ██║",
-    "  ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║╚██████╔╝",
-    "  ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝",
+    " ██████╗ ██╗  ██╗  ██████╗  ██████╗ ████████╗██████╗ ██╗███████╗ ████████╗      █████╗  ██████╗",
+    "██╔════╝ ██║  ██║ ██╔══██╗ ██╔════╝ ╚══██╔══╝██╔══██╗██║██╔════╝ ╚══██╔══╝     ██╔══██╗ ╚═██╔═╝",
+    "██║  ███╗███████║ ██║  ██║ ╚█████╗     ██║   ██║  ██║██║█████╗      ██║        ███████║   ██║",
+    "██║   ██║██╔══██║ ██║  ██║  ╚═══██╗    ██║   ██║  ██║██║██╔═══╝     ██║        ██╔══██║   ██║",
+    "╚██████╔╝██║  ██║ ██████╔╝ ██████╔╝    ██║   ██║  ╚████║███████╗    ██║        ██║  ██║ ██████╗",
+    " ╚═════╝ ╚═╝  ╚═╝ ╚═════╝   ╚═════╝    ╚═╝   ╚═╝   ╚═══╝╚══════╝    ╚═╝        ╚═╝  ╚═╝ ╚═════╝",
     "",
   ],
-  v0: [
+  dev: [
     "",
-    "  ██╗    ██╗      ██████╗ ██╗   ██╗███████╗    ██╗   ██╗ ██████╗ ",
-    "  ██║    ██║     ██╔═══██╗██║   ██║██╔════╝    ██║   ██║██╔═══██╗",
-    "  ██║    ██║     ██║   ██║██║   ██║█████╗      ██║   ██║██║   ██║",
-    "  ██║    ██║     ██║   ██║╚██╗ ██╔╝██╔══╝      ╚██╗ ██╔╝██║   ██║",
-    "  ██████╗███████╗╚██████╔╝ ╚████╔╝ ███████╗     ╚████╔╝ ╚██████╔╝",
-    "  ╚═════╝╚══════╝ ╚═════╝   ╚═══╝  ╚══════╝      ╚═══╝   ╚═════╝ ",
-    "",
-    "  ██╗  ██╗    ██████╗     ██╗  ██╗██████╗ ",
-    "  ██║  ██║   ██╔═████╗    ╚██╗██╔╝╚════██╗",
-    "  ██║  ██║   ██║██╔██║     ╚███╔╝   ███╔═╝",
-    "  ╚██╗██╔╝   ████╔╝██║     ██╔██╗  ██╔══╝ ",
-    "   ╚███╔╝    ╚██████╔╝    ██╔╝ ██╗ ███████╗",
-    "    ╚══╝      ╚═════╝     ╚═╝  ╚═╝ ╚══════╝",
-    "",
-    "  <3  <3  <3  <3  <3  <3  <3  <3  <3  <3",
+    "██████╗ ███████╗██╗   ██╗███╗   ██╗██╗   ██╗███╗   ███╗███████╗██████╗   ██████╗ ",
+    "██╔══██╗██╔════╝██║   ██║████╗  ██║██║   ██║████╗ ████║██╔════╝██╔══██╗██╔═══██╗",
+    "██║  ██║█████╗  ██║   ██║██╔██╗ ██║██║   ██║██╔████╔██║█████╗  ██████╔╝██║   ██║",
+    "██║  ██║██╔══╝  ╚██╗ ██╔╝██║╚██╗██║██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗██║   ██║",
+    "██████╔╝███████╗ ╚████╔╝ ██║ ╚████║╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║╚██████╔╝",
+    "╚═════╝ ╚══════╝  ╚═══╝  ╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ",
     "",
   ],
 }
@@ -88,12 +79,14 @@ interface TerminalLine {
   content: string
 }
 
+const INITIAL_LINES: TerminalLine[] = [
+  { type: "output", content: 'Welcome to GhostNet AI Terminal v1.0.0' },
+  { type: "output", content: 'Type "help" for available commands.' },
+  { type: "output", content: "" },
+]
+
 export function PseudoTerminal() {
-  const [lines, setLines] = useState<TerminalLine[]>([
-    { type: "output", content: 'Welcome to GhostNet AI Terminal v1.0.0' },
-    { type: "output", content: 'Type "help" for available commands.' },
-    { type: "output", content: "" },
-  ])
+  const [lines, setLines] = useState<TerminalLine[]>(INITIAL_LINES)
   const [input, setInput] = useState("")
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -112,16 +105,28 @@ export function PseudoTerminal() {
     ]
 
     if (trimmed === "clear") {
-      setLines([])
+      setLines(INITIAL_LINES)
       setInput("")
       return
     }
 
-    if (trimmed === "v0") {
+    if (trimmed === "dev") {
       setLines([...baseLines, { type: "output", content: "" }])
       setInput("")
-      const v0Lines = COMMANDS["v0"]
-      v0Lines.forEach((line, i) => {
+      const devLines = COMMANDS["dev"]
+      devLines.forEach((line, i) => {
+        setTimeout(() => {
+          setLines((prev) => [...prev, { type: "v0", content: line }])
+        }, i * 80)
+      })
+      return
+    }
+
+    if (trimmed === "ascii") {
+      setLines([...baseLines, { type: "output", content: "" }])
+      setInput("")
+      const asciiLines = COMMANDS["ascii"]
+      asciiLines.forEach((line, i) => {
         setTimeout(() => {
           setLines((prev) => [...prev, { type: "v0", content: line }])
         }, i * 80)
@@ -218,12 +223,12 @@ export function PseudoTerminal() {
         {/* Terminal body */}
         <div
           ref={scrollRef}
-          className="h-80 overflow-y-auto bg-secondary/20 p-4"
+          className="h-80 overflow-y-auto overflow-x-auto bg-secondary/20 p-4"
         >
           {lines.map((line, i) => (
             <div
               key={i}
-              className={`font-mono text-xs leading-relaxed ${
+              className={`font-mono text-xs leading-relaxed whitespace-pre ${
                 line.type === "input"
                   ? "text-foreground"
                   : line.type === "v0"

@@ -12,7 +12,7 @@ const ASCII_LOGO = `
  ╚═════╝ ╚═╝  ╚═══╝`
 
 const socialLinks = [
-  { name: "GitHub", icon: Code2, href: "https://github.com" },
+  { name: "GitHub", icon: Code2, href: "https://github.com/vardzz/ghostnet-ai" },
   { name: "Twitter", icon: MessageCircle, href: "https://twitter.com" },
   { name: "LinkedIn", icon: Globe, href: "https://linkedin.com" },
 ]
