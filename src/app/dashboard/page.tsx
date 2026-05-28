@@ -1,8 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+
+const ASCII_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=-~^"
+
+function useAsciiFrame(rows: number, cols: number, enabled: boolean) {
+  const [frame, setFrame] = useState("")
+  const rafRef = useRef<number>(0)
+  const lastTimeRef = useRef<number>(0)
+
+  const generateFrame = useCallback(() => {
+    let result = ""
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const distFromCenter = Math.abs(c - cols / 2) / (cols / 2)
+        const vertDist = Math.abs(r - rows / 2) / (rows / 2)
+        const dist = Math.sqrt(distFromCenter ** 2 + vertDist ** 2)
+        if (Math.random() > dist * 0.7) {
+          result += ASCII_CHARS[Math.floor(Math.random() * ASCII_CHARS.length)]
+        } else {
+          result += " "
+        }
+      }
+      if (r < rows - 1) result += "\n"
+    }
+    return result
+  }, [rows, cols])
+
+  useEffect(() => {
+    if (!enabled) {
+      setFrame(generateFrame())
+      return
+    }
+
+    const animate = (time: number) => {
+      if (time - lastTimeRef.current > 120) {
+        lastTimeRef.current = time
+        setFrame(generateFrame())
+      }
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [enabled, generateFrame])
+
+  return frame
+}
 
 export default function DashboardPage() {
   const [brand, setBrand] = useState("");
@@ -54,6 +100,8 @@ export default function DashboardPage() {
     }
   };
 
+  const asciiFrame = useAsciiFrame(30, 80, motionEnabled);
+
   return (
     <div className="relative flex min-h-[calc(100vh-8rem)] w-full flex-col items-center justify-center px-4 overflow-hidden">
       {/* Scanline overlay */}
@@ -63,6 +111,16 @@ export default function DashboardPage() {
           aria-hidden="true"
         />
       )}
+
+      {/* ASCII Background */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.10]"
+        aria-hidden="true"
+      >
+        <pre className="font-mono text-sm leading-[18px] text-foreground lg:text-base lg:leading-[22px]">
+          {asciiFrame}
+        </pre>
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
