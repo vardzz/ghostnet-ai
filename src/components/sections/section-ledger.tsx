@@ -14,11 +14,11 @@ const shadow = "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 
 */
 
 const blocks = [
-  { hash: "0xA3F...2B", prev: "0x000...00", nonce: 42, tx: 12, height: 1020 },
-  { hash: "0xB7D...F1", prev: "0xA3F...2B", nonce: 87, tx: 8, height: 1021 },
-  { hash: "0xC12...8A", prev: "0xB7D...F1", nonce: 156, tx: 15, height: 1022 },
-  { hash: "0xD9E...3C", prev: "0xC12...8A", nonce: 203, tx: 5, height: 1023 },
-  { hash: "0xE4A...7D", prev: "0xD9E...3C", nonce: 91, tx: 22, height: 1024 },
+  { hash: "screenshot_01JY0G4J5.png", prev: "html_01JY0G4J5.html", nonce: "244 KB", tx: "12 nodes", height: 1020 },
+  { hash: "screenshot_01JY0G4K3.png", prev: "html_01JY0G4K3.html", nonce: "188 KB", tx: "8 nodes", height: 1021 },
+  { hash: "screenshot_01JY0G5L2.png", prev: "html_01JY0G5L2.html", nonce: "312 KB", tx: "15 nodes", height: 1022 },
+  { hash: "screenshot_01JY0G5M8.png", prev: "html_01JY0G5M8.html", nonce: "105 KB", tx: "4 nodes", height: 1023 },
+  { hash: "screenshot_01JY0G6N4.png", prev: "html_01JY0G6N4.html", nonce: "419 KB", tx: "22 nodes", height: 1024 },
 ]
 
 function BlockCard({ block, index, isSelected, onSelect }: {
@@ -42,18 +42,18 @@ function BlockCard({ block, index, isSelected, onSelect }: {
       style={{ boxShadow: shadow }}
     >
       <span className={`text-[10px] uppercase tracking-wider ${isSelected ? "text-background/50" : "text-muted-foreground"}`}>
-        Block #{block.height}
+        Snapshot #{block.height}
       </span>
-      <span className={`mt-2 text-sm font-bold ${isSelected ? "text-background" : "text-foreground"}`}>
+      <span className={`mt-2 text-sm font-bold truncate max-w-full block ${isSelected ? "text-background" : "text-foreground"}`}>
         {block.hash}
       </span>
       <div className="mt-3 flex flex-col gap-1 text-[10px]">
         <div className="flex justify-between">
-          <span className={isSelected ? "text-background/50" : "text-muted-foreground"}>Nonce</span>
+          <span className={isSelected ? "text-background/50" : "text-muted-foreground"}>File Size</span>
           <span>{block.nonce}</span>
         </div>
         <div className="flex justify-between">
-          <span className={isSelected ? "text-background/50" : "text-muted-foreground"}>Tx</span>
+          <span className={isSelected ? "text-background/50" : "text-muted-foreground"}>DOM Depth</span>
           <span>{block.tx}</span>
         </div>
       </div>
@@ -134,27 +134,27 @@ export function SectionLedger({ section }: { section: TechSection }) {
           >
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 bg-foreground" />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Block Inspector</span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Evidence Inspector</span>
             </div>
             <div className="mt-4 flex flex-col gap-3 font-mono text-xs">
               <div className="flex justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Height</span>
-                <span className="font-bold text-foreground">#{blocks[selectedBlock].height}</span>
+                <span className="text-muted-foreground">Snapshot ID</span>
+                <span className="font-bold text-foreground">#snap_{blocks[selectedBlock].height}</span>
               </div>
               <div className="flex justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Hash</span>
-                <span className="font-bold text-foreground">{blocks[selectedBlock].hash}</span>
+                <span className="text-muted-foreground">Screenshot File</span>
+                <span className="font-bold text-foreground truncate max-w-[12rem] text-right">{blocks[selectedBlock].hash}</span>
               </div>
               <div className="flex justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Previous</span>
-                <span className="text-foreground">{blocks[selectedBlock].prev}</span>
+                <span className="text-muted-foreground">HTML Snapshot</span>
+                <span className="text-foreground truncate max-w-[12rem] text-right">{blocks[selectedBlock].prev}</span>
               </div>
               <div className="flex justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Nonce</span>
+                <span className="text-muted-foreground">File Size</span>
                 <span className="text-foreground">{blocks[selectedBlock].nonce}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Transactions</span>
+                <span className="text-muted-foreground">Captured DOM Elements</span>
                 <span className="text-foreground">{blocks[selectedBlock].tx}</span>
               </div>
             </div>

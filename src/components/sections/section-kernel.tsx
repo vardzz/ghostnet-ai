@@ -17,16 +17,16 @@ function BootSequence() {
   const isInView = useInView(ref, { once: true })
   const [lines, setLines] = useState<string[]>([])
   const bootLines = [
-    "[  0.000000] Linux version 6.1.0-ghostnet (gcc 13.2.0)",
-    "[  0.000012] Command line: BOOT_IMAGE=/vmlinuz root=/dev/sda1",
-    "[  0.000034] x86/cpu: AMD Ryzen 9 7950X detected",
-    "[  0.000089] Memory: 16384000K/16777216K available",
-    "[  0.001204] ACPI: Core revision 20221020",
-    "[  0.002100] PCI: Using configuration type 1",
-    "[  0.003400] Scheduler: CFS initialized (16 CPUs)",
-    "[  0.004200] NET: Registered PF_INET protocol family",
-    "[  0.005100] VFS: Mounted root filesystem (ext4)",
-    "[  OK  ] System ready.",
+    "[  0.000000] Initializing GhostNet AI Threat Discovery Pipeline...",
+    "[  0.001020] Loading brand monitors (tenant_demo)...",
+    "[  0.002450] Connecting to Bright Data SERP API client...",
+    "[  0.004900] Preparing brand variant search terms (homoglyphs)...",
+    "[  0.008120] Scanning Google index for suspect domain lookalikes...",
+    "[  0.015340] Scanning Bing index for spoofed login variants...",
+    "[  0.024980] Parsing SERP results: 18 raw URLs matched",
+    "[  0.038100] Applying typosquatting heuristics and ranking scores...",
+    "[  0.052000] Selecting high-signal candidates for deep capture...",
+    "[  OK  ] Discovery module operational. Ready for ingestion.",
   ]
 
   useEffect(() => {
@@ -106,10 +106,10 @@ export function SectionKernel({ section }: { section: TechSection }) {
               <div className="h-2.5 w-2.5 border border-background/30 bg-background/30" />
             </div>
             <span className="font-mono text-xs text-background">
-              kernel@ghostnet:~
+              discovery@ghostnet:~
             </span>
           </div>
-          <span className="font-mono text-[10px] text-background/50">bash 5.2.15</span>
+          <span className="font-mono text-[10px] text-background/50">node v20.11.0</span>
         </div>
 
         {/* Terminal body with two columns */}
@@ -118,7 +118,7 @@ export function SectionKernel({ section }: { section: TechSection }) {
           <div className="border-b border-border lg:col-span-3 lg:border-b-0 lg:border-r">
             <div className="border-b border-border px-4 py-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                Boot Sequence
+                Discovery Boot Sequence
               </span>
             </div>
             <BootSequence />

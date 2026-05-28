@@ -117,17 +117,11 @@ export function HeroSection() {
             href="/dashboard"
             className="group flex items-center gap-2 border border-foreground bg-foreground px-6 py-3 font-mono text-sm text-background transition-all duration-200 hover:bg-transparent hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:outline-none"
           >
-            View Threat Dashboard
+            Get Started
             <span className="transition-transform duration-200 group-hover:translate-x-1">
-              {"->"}
+              {" ->"}
             </span>
           </Link>
-          <a
-            href="#kernel-systems"
-            className="flex items-center gap-2 border border-border px-6 py-3 font-mono text-sm text-muted-foreground transition-all duration-200 hover:border-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:outline-none"
-          >
-            See How It Works
-          </a>
         </motion.div>
 
       </div>

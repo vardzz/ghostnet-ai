@@ -17,41 +17,41 @@ const shadow = "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 
 const layers = [
   {
     level: "L4",
-    name: "APPLICATION",
-    desc: "User-facing software, APIs, and runtime environments. The visible surface of the computing stack.",
-    detail: "HTTP servers, CLI tools, GUI apps, WASM modules",
+    name: "TRIAGE FRONTEND",
+    desc: "React-based Next.js frontend rendering active threat feeds, interactive screenshot and DOM evidence, and DMCA cease-and-desist reports.",
+    detail: "Tailwind CSS, Framer Motion, HTML Canvas, client-side PDF exports",
     color: "bg-foreground",
     textColor: "text-background",
   },
   {
     level: "L3",
-    name: "OS / RUNTIME",
-    desc: "Operating system services, syscalls, and language runtimes managing execution flow.",
-    detail: "Process scheduling, memory management, file systems",
+    name: "NEXT.JS CORE API",
+    desc: "Next.js App Router endpoints orchestrating discovering, scraping, and analyzing pipelines within a strict 120s budget.",
+    detail: "API Routing, request schema validation, deadline scheduling, event dispatch",
     color: "bg-background",
     textColor: "text-foreground",
   },
   {
     level: "L2",
-    name: "HAL INTERFACE",
-    desc: "The contract layer translating software intentions into hardware-specific commands.",
-    detail: "MMIO registers, DMA controllers, interrupt handlers",
+    name: "INTEGRATION LAYER",
+    desc: "Bright Data proxy and scraping services unlocking pages and capturing visual screenshot assets from lookalikes.",
+    detail: "Bright Data SERP API, Web Unlocker crawler, Scraping Browser automation",
     color: "bg-background",
     textColor: "text-foreground",
   },
   {
     level: "L1",
-    name: "DRIVERS",
-    desc: "Device-specific modules communicating directly with individual hardware peripherals.",
-    detail: "GPU drivers, NIC firmware, storage controllers",
+    name: "AI MODEL LAYER",
+    desc: "Gemini 2.0 Flash reasoning agent classifying threat score, urgency tier, and drafting Cease & Desist reporting templates.",
+    detail: "Structured JSON schema output, system prompt locking, validation parser",
     color: "bg-foreground/40",
     textColor: "text-foreground",
   },
   {
     level: "L0",
-    name: "SILICON",
-    desc: "Raw transistors, logic gates, and physical circuits. Where computation meets physics.",
-    detail: "FinFET transistors, copper interconnects, photolithography",
+    name: "PERSISTENCE STORE",
+    desc: "Supabase database layer and file storage buckets preserving immutable files and enforcing row-level tenant security.",
+    detail: "PostgreSQL, Brands/Threats tables, Evidence S3 storage bucket",
     color: "bg-foreground/20",
     textColor: "text-foreground",
   },
@@ -117,14 +117,14 @@ function LayerStack() {
 
 function RegisterView() {
   const registers = [
-    { name: "RAX", value: "0x00007FFE4B3C2A10" },
-    { name: "RBX", value: "0x0000000000000001" },
-    { name: "RCX", value: "0x00007FFE4B3C2A08" },
-    { name: "RDX", value: "0x0000000000000000" },
-    { name: "RSP", value: "0x00007FFE4B3C29E0" },
-    { name: "RBP", value: "0x00007FFE4B3C2A00" },
-    { name: "RIP", value: "0x00005555555551A9" },
-    { name: "RFLAGS", value: "0x0000000000000246" },
+    { name: "SCAN_TIMEOUT", value: "120s (budget)" },
+    { name: "CANDIDATE_LIMIT", value: "8 (discovered)" },
+    { name: "BRIGHTDATA_ZONE", value: "SERP_zone_01" },
+    { name: "GEMINI_MODEL", value: "gemini-2.0-flash" },
+    { name: "SUPABASE_URL", value: "active" },
+    { name: "TENANT_ID", value: "tenant_demo" },
+    { name: "ACTIVE_SCANS", value: "1" },
+    { name: "PIPELINE_STATUS", value: "OPERATIONAL" },
   ]
 
   return (
@@ -132,7 +132,7 @@ function RegisterView() {
       <div className="flex items-center gap-2 border-b border-border px-4 py-2">
         <div className="h-1.5 w-1.5 bg-foreground" />
         <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          CPU Registers
+          Pipeline Parameters
         </span>
       </div>
       <div className="grid grid-cols-2 gap-0">
@@ -147,8 +147,8 @@ function RegisterView() {
               i < registers.length - 2 ? "border-b border-border" : ""
             } ${i % 2 === 0 ? "border-r border-border" : ""}`}
           >
-            <span className="w-12 font-bold text-foreground">{reg.name}</span>
-            <span className="text-[10px] text-muted-foreground">{reg.value}</span>
+            <span className="w-24 shrink-0 font-bold text-foreground text-[10px]">{reg.name}</span>
+            <span className="text-[10px] text-muted-foreground truncate">{reg.value}</span>
           </motion.div>
         ))}
       </div>
