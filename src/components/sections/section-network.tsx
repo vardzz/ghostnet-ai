@@ -107,33 +107,33 @@ export function SectionNetwork({ section }: { section: TechSection }) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col gap-4 bg-white p-8 border border-neutral-200"
+        className="flex flex-col gap-4 bg-black p-8 border border-border"
         style={{ boxShadow: shadow }}
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-end gap-6">
-            <span className="font-pixel-line text-7xl font-bold leading-none text-black md:text-9xl">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
               {section.number}
             </span>
             <div className="pb-2">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-black/60">{section.subtitle}</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
               </div>
-              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-black md:text-5xl">
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
                 {section.title}
               </h2>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <motion.div
-              className="h-2.5 w-2.5 bg-black"
+              className="h-2.5 w-2.5 bg-foreground"
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
             />
-            <span className="font-mono text-xs text-black/70">LIVE</span>
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
           </div>
         </div>
-        <p className="max-w-2xl font-mono text-xs leading-relaxed text-black/60">
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
           {section.description}
         </p>
       </motion.div>

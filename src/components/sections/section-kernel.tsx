@@ -71,21 +71,40 @@ function BootSequence() {
 export function SectionKernel({ section }: { section: TechSection }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
-      {/* Section label with ghost number */}
+      {/* Header Box (aligned with Section 02) */}
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mb-6 flex items-end gap-6"
+        className="flex flex-col gap-4 bg-black p-8 border border-border mb-6"
+        style={{ boxShadow: shadow }}
       >
-        <span className="font-pixel-line text-7xl font-bold leading-none text-foreground/[0.08] md:text-9xl">
-          {section.number}
-        </span>
-        <div className="flex-1 pb-2">
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-end gap-6">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+              {section.number}
+            </span>
+            <div className="pb-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+              </div>
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                {section.title}
+              </h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="h-2.5 w-2.5 bg-foreground"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            />
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
           </div>
         </div>
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
+          {section.description}
+        </p>
       </motion.div>
 
       {/* Giant terminal window */}
@@ -124,27 +143,17 @@ export function SectionKernel({ section }: { section: TechSection }) {
             <BootSequence />
           </div>
 
-          {/* Right: System info panel (2 cols) */}
+          {/* Right: Specs parameters panel (2 cols) */}
           <div className="flex flex-col lg:col-span-2">
             <div className="border-b border-border px-4 py-2">
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                System Overview
+                System Parameters
               </span>
             </div>
 
-            {/* Title area */}
-            <div className="border-b border-border p-6">
-              <h2 className="font-pixel-line text-3xl font-bold text-foreground md:text-4xl">
-                {section.title}
-              </h2>
-              <p className="mt-3 font-mono text-xs leading-relaxed text-muted-foreground">
-                {section.description}
-              </p>
-            </div>
-
             {/* Specs as system parameters */}
-            <div className="flex-1 p-4">
-              <div className="flex flex-col gap-3">
+            <div className="flex-1 p-6">
+              <div className="flex flex-col gap-4">
                 {section.specs.map((spec, i) => (
                   <motion.div
                     key={spec.label}
@@ -152,11 +161,11 @@ export function SectionKernel({ section }: { section: TechSection }) {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + i * 0.1 }}
-                    className="flex items-start gap-2 font-mono text-xs"
+                    className="flex items-start gap-2 font-mono text-xs border-b border-border/50 pb-2"
                   >
                     <span className="text-muted-foreground">{">"}</span>
-                    <span className="text-muted-foreground">{spec.label}:</span>
-                    <span className="font-bold text-foreground">{spec.value}</span>
+                    <span className="text-muted-foreground uppercase">{spec.label}:</span>
+                    <span className="font-bold text-foreground ml-auto">{spec.value}</span>
                   </motion.div>
                 ))}
               </div>

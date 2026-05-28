@@ -120,7 +120,7 @@ function RegisterView() {
     { name: "SCAN_TIMEOUT", value: "120s (budget)" },
     { name: "CANDIDATE_LIMIT", value: "8 (discovered)" },
     { name: "BRIGHTDATA_ZONE", value: "SERP_zone_01" },
-    { name: "GEMINI_MODEL", value: "gemini-2.0-flash" },
+    { name: "GEMINI_MODEL", value: "gemini-2.5-flash" },
     { name: "SUPABASE_URL", value: "active" },
     { name: "TENANT_ID", value: "tenant_demo" },
     { name: "ACTIVE_SCANS", value: "1" },
@@ -159,22 +159,41 @@ function RegisterView() {
 export function SectionHardware({ section }: { section: TechSection }) {
   return (
     <div className="py-20 lg:py-32">
-      {/* Header: big number */}
+      {/* Header Box (aligned with Section 02) */}
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12 flex items-center gap-8"
+          className="flex flex-col gap-4 bg-black p-8 border border-border mb-6"
+          style={{ boxShadow: shadow }}
         >
-          <span className="font-pixel-line text-8xl font-bold text-foreground/[0.06] md:text-[10rem]">
-            {section.number}
-          </span>
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
-            <h2 className="font-pixel-line text-3xl font-bold text-foreground md:text-5xl">{section.title}</h2>
-            <p className="mt-4 max-w-xl font-mono text-xs leading-relaxed text-muted-foreground">{section.description}</p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-end gap-6">
+              <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+                {section.number}
+              </span>
+              <div className="pb-2">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+                </div>
+                <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                  {section.title}
+                </h2>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <motion.div
+                className="h-2.5 w-2.5 bg-foreground"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+              />
+              <span className="font-mono text-xs text-muted-foreground">LIVE</span>
+            </div>
           </div>
+          <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
+            {section.description}
+          </p>
         </motion.div>
       </div>
 

@@ -126,25 +126,40 @@ export function SectionCompiler({ section }: { section: TechSection }) {
 
   return (
     <div ref={ref} className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
-      {/* Header with ghost number */}
+      {/* Header Box (aligned with Section 02) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mb-12 flex items-end gap-6"
+        className="flex flex-col gap-4 bg-black p-8 border border-border mb-6"
+        style={{ boxShadow: shadow }}
       >
-        <span className="font-pixel-line text-7xl font-bold leading-none text-foreground/[0.08] md:text-9xl">
-          {section.number}
-        </span>
-        <div className="flex-1 pb-2">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-end gap-6">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+              {section.number}
+            </span>
+            <div className="pb-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+              </div>
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                {section.title}
+              </h2>
+            </div>
           </div>
-          <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
-            {section.title}
-          </h2>
-          <p className="mt-4 max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">{section.description}</p>
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="h-2.5 w-2.5 bg-foreground"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            />
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
+          </div>
         </div>
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
+          {section.description}
+        </p>
       </motion.div>
 
       {/* IDE-like panel */}

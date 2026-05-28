@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react"
 import { motion } from "framer-motion"
 
+const shadow = "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 0px 1px 1px -0.5px, rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px, rgba(42, 51, 70, 0.04) 0px 6px 6px -3px, rgba(14, 63, 126, 0.04) 0px 12px 12px -6px, rgba(14, 63, 126, 0.04) 0px 24px 24px -12px"
+
 const COMMANDS: Record<string, string[]> = {
   help: [
     "Available commands:",
@@ -46,7 +48,7 @@ const COMMANDS: Record<string, string[]> = {
   stack: [
     "Frontend:  Next.js 16 + React 19",
     "Styling:   Tailwind CSS",
-    "AI Engine: Gemini-2.0-Flash",
+    "AI Engine: Gemini-2.5-Flash",
     "Database:  Supabase / PostgreSQL",
     "Network:   Bright Data APIs",
   ],
@@ -159,24 +161,46 @@ export function PseudoTerminal() {
       transition={{ duration: 0.5 }}
       className="mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-24"
     >
-      <div className="mb-8 flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-sm text-muted-foreground">{">"}</span>
-          <div className="h-[1px] w-12 bg-border" />
-          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Interactive
-          </span>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="flex flex-col gap-4 bg-black p-8 border border-border mb-8"
+        style={{ boxShadow: shadow }}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-end gap-6">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+              {">_"}
+            </span>
+            <div className="pb-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  INTERACTIVE
+                </span>
+              </div>
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                Terminal
+              </h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="h-2.5 w-2.5 bg-foreground"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            />
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
+          </div>
         </div>
-        <h2 className="font-pixel-line text-3xl font-bold tracking-tight text-foreground md:text-5xl">
-          Terminal
-        </h2>
-        <p className="max-w-prose font-mono text-sm leading-relaxed text-muted-foreground">
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
           Explore the system. Type commands to interact with the GhostNet AI Hub.
         </p>
-      </div>
+      </motion.div>
 
       <div
         className="border border-border"
+        style={{ boxShadow: shadow }}
         onClick={() => inputRef.current?.focus()}
         role="application"
         aria-label="Interactive pseudo-terminal"

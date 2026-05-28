@@ -73,37 +73,42 @@ export function SectionLedger({ section }: { section: TechSection }) {
 
   return (
     <div className="py-20 lg:py-32">
-      {/* Full-width top bar with number + title */}
+      {/* Header Box (aligned with Section 02) */}
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="flex items-end gap-6"
-        >
-          <span className="font-pixel-line text-7xl font-bold leading-none text-foreground/[0.08] md:text-9xl">
-            {section.number}
-          </span>
-          <div className="pb-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
-            <h2 className="font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
-              {section.title}
-            </h2>
-          </div>
-        </motion.div>
-
-        {/* Description in columns */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="mt-8 max-w-4xl font-mono text-sm leading-relaxed text-muted-foreground md:columns-2 md:gap-12"
+          className="flex flex-col gap-4 bg-black p-8 border border-border mb-6"
+          style={{ boxShadow: shadow }}
         >
-          {section.description} Each block is cryptographically linked to
-          its predecessor, forming an immutable chain. The Merkle root ensures
-          data integrity across all transactions within a single block.
-        </motion.p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-end gap-6">
+              <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+                {section.number}
+              </span>
+              <div className="pb-2">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+                </div>
+                <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                  {section.title}
+                </h2>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <motion.div
+                className="h-2.5 w-2.5 bg-foreground"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+              />
+              <span className="font-mono text-xs text-muted-foreground">LIVE</span>
+            </div>
+          </div>
+          <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
+            {section.description}
+          </p>
+        </motion.div>
       </div>
 
       {/* Horizontal scrolling chain */}
