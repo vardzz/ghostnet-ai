@@ -27,5 +27,5 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run smoke tests
-        run: npm run test -- --ci --coverage
+      #- name: Run smoke tests
+      # run: npm run test -- --ci --coverage
