@@ -1,6 +1,6 @@
-// Sample Mock for Claude Analysis Service
+// Sample Mock for Gemini (Google AI) Analysis Service
 
-export const mockClaudeService = {
+export const mockGeminiService = {
   // Simulate a successful validation response
   analyzeThreat: jest.fn().mockResolvedValue({
     isThreat: true,
@@ -12,17 +12,17 @@ export const mockClaudeService = {
 
   // Simulate a model failure path (e.g., unparseable JSON or generic error)
   analyzeThreatFailure: jest.fn().mockRejectedValue(
-    new Error('Failed to parse Claude JSON response')
+    new Error('Failed to parse Gemini JSON response')
   ),
   
   // Simulate a rate limit or overloaded model
   analyzeThreatOverloaded: jest.fn().mockRejectedValue(
-    new Error('Anthropic API overloaded')
+    new Error('Gemini API overloaded')
   )
 };
 
-export const resetClaudeMocks = () => {
-  mockClaudeService.analyzeThreat.mockClear();
-  mockClaudeService.analyzeThreatFailure.mockClear();
-  mockClaudeService.analyzeThreatOverloaded.mockClear();
+export const resetGeminiMocks = () => {
+  mockGeminiService.analyzeThreat.mockClear();
+  mockGeminiService.analyzeThreatFailure.mockClear();
+  mockGeminiService.analyzeThreatOverloaded.mockClear();
 };

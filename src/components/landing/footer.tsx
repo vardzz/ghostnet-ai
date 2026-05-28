@@ -12,7 +12,7 @@ const ASCII_LOGO = `
  ╚═════╝ ╚═╝  ╚═══╝`
 
 const socialLinks = [
-  { name: "GitHub", icon: Code2, href: "https://github.com" },
+  { name: "GitHub", icon: Code2, href: "https://github.com/vardzz/ghostnet-ai" },
   { name: "Twitter", icon: MessageCircle, href: "https://twitter.com" },
   { name: "LinkedIn", icon: Globe, href: "https://linkedin.com" },
 ]
@@ -94,7 +94,7 @@ export function Footer() {
                   "Tailwind CSS",
                   "Framer Motion",
                   "Bright Data",
-                  "Claude",
+                  "Gemini",
                 ].map(
                   (tech) => (
                     <span

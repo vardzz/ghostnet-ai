@@ -1,6 +1,6 @@
 /**
- * @file claude-analysis.ts
- * @description Locked TypeScript interface for Claude AI analysis output.
+ * @file gemini-analysis.ts
+ * @description Locked TypeScript interface for model analysis output (Gemini 2.0 Flash).
  *
  * DO NOT modify field names or types without a schema version bump and
  * sign-off from the AI Engineering lead. Downstream consumers (dashboard,
@@ -44,15 +44,15 @@ export interface EvidenceCitation {
 // ─── Primary Output Interface ─────────────────────────────────────────────────
 
 /**
- * ClaudeAnalysisOutput
+ * GeminiAnalysisOutput
  *
- * The complete, machine-parseable result returned by Claude after analysing
+ * The complete, machine-parseable result returned by Gemini after analysing
  * an evidence packet. Every field is required unless explicitly marked
  * optional, and the schema version must be incremented on any breaking change.
  *
  * @version 1.0.0
  */
-export interface ClaudeAnalysisOutput {
+export interface GeminiAnalysisOutput {
   /**
    * Overall threat risk score.
    * Range: 0.0 (no threat) – 10.0 (maximum severity).

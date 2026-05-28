@@ -1,5 +1,5 @@
 import { capturePage } from '@/lib/brightdata/scraping-browser-client';
-import { runClaudeAnalysis } from '@/lib/claude/analysis-service';
+import { runGeminiAnalysis } from '@/lib/gemini/analysis-service';
 
 jest.mock('playwright', () => {
   const html = `
@@ -53,9 +53,9 @@ jest.mock('playwright', () => {
 }, { virtual: true });
 
 describe('Scan Lifecycle (Smoke Test)', () => {
-  it('captures evidence from a page and falls back to review when Claude is unavailable', async () => {
-    const originalApiKey = process.env.ANTHROPIC_API_KEY;
-    delete process.env.ANTHROPIC_API_KEY;
+  it('captures evidence from a page and falls back to review when Gemini is unavailable', async () => {
+    const originalApiKey = process.env.GEMINI_API_KEY;
+    delete process.env.GEMINI_API_KEY;
 
     try {
       const capture = await capturePage({
@@ -68,7 +68,7 @@ describe('Scan Lifecycle (Smoke Test)', () => {
       expect(capture.visibleText.join(' ')).toContain('GhostNet AI Login');
       expect(capture.formSelectors.join(' ')).toContain('<form id="login-form">');
 
-      const analysis = await runClaudeAnalysis({
+      const analysis = await runGeminiAnalysis({
         collectionId: 'scan-lifecycle-smoke',
         collectedAt: capture.capturedAt,
         items: [
@@ -80,12 +80,12 @@ describe('Scan Lifecycle (Smoke Test)', () => {
       });
 
       expect(analysis.analysisState).toBe('needs_review');
-      expect(analysis.reason).toMatch(/ANTHROPIC_API_KEY|timed out|Claude API error/i);
+      expect(analysis.reason).toMatch(/GEMINI_API_KEY|timed out|Gemini API error/i);
     } finally {
       if (originalApiKey === undefined) {
-        delete process.env.ANTHROPIC_API_KEY;
+        delete process.env.GEMINI_API_KEY;
       } else {
-        process.env.ANTHROPIC_API_KEY = originalApiKey;
+        process.env.GEMINI_API_KEY = originalApiKey;
       }
     }
   });

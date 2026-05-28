@@ -1,20 +1,20 @@
 /**
- * @file src/app/api/claude/debug/route.ts
- * @description GET /api/claude/debug
+ * @file src/app/api/gemini/debug/route.ts
+ * @description GET /api/gemini/debug
  *
- * Replays Kurt's docs/samples/sample-evidence.json through the full Claude
+ * Replays Kurt's docs/samples/sample-evidence.json through the full Gemini
  * analysis pipeline. Designed for local verification without any setup.
  *
  * Query parameters:
- *   ?dry=true   → prints the built prompt WITHOUT calling Claude (safe, free)
- *   (no flag)   → makes a real Claude API call (requires ANTHROPIC_API_KEY)
+ *   ?dry=true   → prints the built prompt WITHOUT calling Gemini (safe, free)
+ *   (no flag)   → makes a real Gemini API call (requires GEMINI_API_KEY)
  *
  * Example usage:
  *   # Inspect the prompt for free:
- *   curl "http://localhost:3000/api/claude/debug?dry=true"
+ *   curl "http://localhost:3000/api/gemini/debug?dry=true"
  *
  *   # Real end-to-end call:
- *   curl "http://localhost:3000/api/claude/debug"
+ *   curl "http://localhost:3000/api/gemini/debug"
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -24,8 +24,8 @@ import {
   buildAnalysisPrompt,
   SYSTEM_PROMPT,
   type EvidencePacket,
-} from "@/lib/claude/prompt-template";
-import { runClaudeAnalysis } from "@/lib/claude/analysis-service";
+} from "@/lib/gemini/prompt-template";
+import { runGeminiAnalysis } from "@/lib/gemini/analysis-service";
 
 // ─── Load Sample Evidence ─────────────────────────────────────────────────────
 
@@ -110,9 +110,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
   }
 
-  // ── LIVE RUN: call Claude and return full result ───────────────────────────
+  // ── LIVE RUN: call Gemini and return full result ───────────────────────────
   const debugThreatId = `debug-${Date.now()}`;
-  const result = await runClaudeAnalysis(evidence);
+  const result = await runGeminiAnalysis(evidence);
 
   return NextResponse.json({
     mode: "live",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User, Bell } from "lucide-react";
+import { User } from "lucide-react";
 
 export function DashboardNav() {
   return (
@@ -9,14 +9,6 @@ export function DashboardNav() {
           <span className="text-muted-foreground">{">"}</span>
           <span className="font-pixel tracking-wider text-foreground">GHOSTNET_AI</span>
         </Link>
-        <div className="flex items-center gap-4">
-          <button className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded p-1">
-            <Bell size={18} />
-          </button>
-          <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center border border-border">
-            <User size={16} className="text-muted-foreground" />
-          </div>
-        </div>
       </div>
     </header>
   );

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getLiveThreatsFixture } from "@/lib/threats";
 import { createSignedSupabaseUrl } from "@/lib/supabase-rest";
-import { getAllThreatRecords } from "@/lib/claude/threats-store";
+import { getAllThreatRecords } from "@/lib/gemini/threats-store";
 
 /**
  * GET /api/threats/live

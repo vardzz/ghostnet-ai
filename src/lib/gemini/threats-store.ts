@@ -7,7 +7,7 @@
  * live feed and analysis writes real when a database is available.
  */
 
-import type { ClaudeAnalysisOutput } from "../../types/claude-analysis";
+import type { GeminiAnalysisOutput } from "../../types/gemini-analysis";
 import { hasSupabaseCredentials, supabaseSelectRows, supabaseUpsertRow } from "../supabase-rest";
 
 export interface ThreatRecord {
@@ -181,7 +181,7 @@ async function persistThreatRecord(record: ThreatRecord): Promise<void> {
 
 export async function writeSuccessfulAnalysis(
   threatId: string,
-  analysis: ClaudeAnalysisOutput,
+  analysis: GeminiAnalysisOutput,
   seed?: ThreatSeed
 ): Promise<ThreatRecord> {
   const previous = await loadThreatRecord(threatId);

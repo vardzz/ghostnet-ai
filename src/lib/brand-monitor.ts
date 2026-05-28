@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { getScanDeadlineAt } from "./scan-budget";
 
 export type BrandHandle = {
   platform: "x" | "linkedin" | "instagram" | "facebook" | "youtube" | "tiktok" | "github" | "other";
@@ -51,18 +52,12 @@ function getCandidateLimit(): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 8;
 }
 
-function getDeadlineMs(): number {
-  const raw = process.env.SCAN_DEADLINE_MS;
-  const parsed = raw ? Number.parseInt(raw, 10) : NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 110_000;
-}
-
 export function registerBrandMonitor(request: MonitorBrandRequest): RegisteredBrand {
   const now = new Date().toISOString();
   const brandId = `brand_${randomUUID().replace(/-/g, "")}`;
   const scanId = `scan_${randomUUID().replace(/-/g, "")}`;
   const candidateLimit = getCandidateLimit();
-  const deadlineAt = new Date(Date.now() + getDeadlineMs()).toISOString();
+  const deadlineAt = getScanDeadlineAt();
 
   const response: RegisteredBrand = {
     brand: {

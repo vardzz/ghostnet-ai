@@ -1,13 +1,13 @@
 /**
  * @file validator.ts
- * @description Runtime validator for ClaudeAnalysisOutput payloads.
+ * @description Runtime validator for GeminiAnalysisOutput payloads.
  *
- * Uses the JSON Schema defined in docs/samples/claude-schema/schema.json
+ * Uses the JSON Schema defined in docs/samples/gemini-schema/schema.json
  * as the source of truth. The inline schema below is kept in sync manually;
  * update BOTH locations together whenever the contract changes.
  */
 
-import type { ClaudeAnalysisOutput } from "../../types/claude-analysis";
+import type { GeminiAnalysisOutput } from "../../types/gemini-analysis";
 
 // ─── Validation Result ────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ const ISO_8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 // ─── Validator ────────────────────────────────────────────────────────────────
 
 /**
- * Validates an unknown value against the ClaudeAnalysisOutput contract.
+ * Validates an unknown value against the GeminiAnalysisOutput contract.
  *
  * This is intentionally a pure structural/semantic validator — it does NOT
  * make network calls or load the JSON Schema file at runtime, keeping the
@@ -48,7 +48,7 @@ const ISO_8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
  * @param raw - The value to validate (typically parsed from JSON).
  * @returns A ValidationResult with valid flag and any error messages.
  */
-export function validateClaudeOutput(raw: unknown): ValidationResult {
+export function validateGeminiOutput(raw: unknown): ValidationResult {
   const errors: string[] = [];
 
   // Must be a non-null object
@@ -168,17 +168,17 @@ export function validateClaudeOutput(raw: unknown): ValidationResult {
 }
 
 /**
- * Type-guard that asserts an unknown value is a valid ClaudeAnalysisOutput.
+ * Type-guard that asserts an unknown value is a valid GeminiAnalysisOutput.
  * Throws a descriptive Error if validation fails — useful in strict pipelines.
  *
  * @param raw - The value to assert.
  * @throws Error with all validation errors joined by newline.
  */
-export function assertClaudeOutput(raw: unknown): asserts raw is ClaudeAnalysisOutput {
-  const result = validateClaudeOutput(raw);
+export function assertGeminiOutput(raw: unknown): asserts raw is GeminiAnalysisOutput {
+  const result = validateGeminiOutput(raw);
   if (!result.valid) {
     throw new Error(
-      `ClaudeAnalysisOutput validation failed:\n${result.errors.map((e) => `  • ${e}`).join("\n")}`
+      `GeminiAnalysisOutput validation failed:\n${result.errors.map((e) => `  • ${e}`).join("\n")}`
     );
   }
 }

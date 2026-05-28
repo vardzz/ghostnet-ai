@@ -12,14 +12,14 @@ const shadow = "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 
 */
 
 const nodes = [
-  { id: "A", x: 15, y: 15, status: "active" },
-  { id: "B", x: 75, y: 10, status: "active" },
-  { id: "C", x: 5, y: 45, status: "active" },
-  { id: "D", x: 45, y: 40, status: "idle" },
-  { id: "E", x: 85, y: 45, status: "active" },
-  { id: "F", x: 95, y: 20, status: "warn" },
-  { id: "G", x: 25, y: 75, status: "active" },
-  { id: "H", x: 70, y: 80, status: "active" },
+  { id: "US_PROXY", x: 15, y: 15, status: "active" },
+  { id: "EU_PROXY", x: 75, y: 10, status: "active" },
+  { id: "SG_PROXY", x: 5, y: 45, status: "active" },
+  { id: "WAF_BYPASS", x: 45, y: 40, status: "idle" },
+  { id: "CAPTCHA", x: 85, y: 45, status: "active" },
+  { id: "ANTI_BOT", x: 95, y: 20, status: "warn" },
+  { id: "IP_ROTATE", x: 25, y: 75, status: "active" },
+  { id: "RAW_HTML", x: 70, y: 80, status: "active" },
 ]
 
 const connections = [
@@ -72,7 +72,7 @@ function NetworkMap() {
           viewport={{ once: true }}
           transition={{ delay: 0.4 + i * 0.08, type: "spring" }}
         >
-          <div className={`flex h-8 w-8 items-center justify-center border font-mono text-[10px] font-bold ${
+          <div className={`flex h-8 px-2 w-auto min-w-[3.5rem] items-center justify-center border font-mono text-[9px] font-bold ${
             node.status === "active" ? "border-foreground bg-foreground text-background"
             : node.status === "warn" ? "border-foreground bg-background text-foreground"
             : "border-border bg-background text-muted-foreground"
@@ -94,10 +94,10 @@ function NetworkMap() {
 
 export function SectionNetwork({ section }: { section: TechSection }) {
   const metrics = [
-    { label: "Nodes Online", value: "7/8", pct: 87 },
-    { label: "Throughput", value: "9.2 Gbps", pct: 92 },
-    { label: "Latency p99", value: "8.4ms", pct: 16 },
-    { label: "Packet Loss", value: "0.001%", pct: 1 },
+    { label: "Bypass Success", value: "99.9%", pct: 99 },
+    { label: "Residential IPs", value: "72M+ Active", pct: 95 },
+    { label: "Crawl Latency", value: "1.2s avg", pct: 12 },
+    { label: "CAPTCHAs Solved", value: "100%", pct: 100 },
   ]
 
   return (
@@ -107,33 +107,33 @@ export function SectionNetwork({ section }: { section: TechSection }) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col gap-4 bg-white p-8 border border-neutral-200"
+        className="flex flex-col gap-4 bg-black p-8 border border-border"
         style={{ boxShadow: shadow }}
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-end gap-6">
-            <span className="font-pixel-line text-7xl font-bold leading-none text-black md:text-9xl">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
               {section.number}
             </span>
             <div className="pb-2">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-black/60">{section.subtitle}</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
               </div>
-              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-black md:text-5xl">
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
                 {section.title}
               </h2>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <motion.div
-              className="h-2.5 w-2.5 bg-black"
+              className="h-2.5 w-2.5 bg-foreground"
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
             />
-            <span className="font-mono text-xs text-black/70">LIVE</span>
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
           </div>
         </div>
-        <p className="max-w-2xl font-mono text-xs leading-relaxed text-black/60">
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
           {section.description}
         </p>
       </motion.div>

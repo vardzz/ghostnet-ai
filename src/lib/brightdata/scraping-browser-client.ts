@@ -10,7 +10,7 @@ export interface EvidenceBundle {
   visibleText: string[];
   formSelectors: string[];
   capturedAt: string;
-  status: 'captured' | 'fetch_failed' | 'render_failed' | 'blocked_by_target' | 'incomplete_evidence';
+  status: "captured" | "fetch_failed" | "render_failed" | "blocked_by_target" | "incomplete_evidence";
 }
 
 const TRANSPARENT_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
@@ -76,8 +76,10 @@ export async function capturePage(options: { url: string; outputDir?: string; ti
       await writeFile(pngPath, pngBuffer);
 
       // crude extractions
-      const textMatches = Array.from(new Set((html.match(/>([^<>]{2,200})</g) || []).map((m: string) => m.replace(/^>/, '').replace(/<$/, '').trim()))).slice(0, maxVisibleItems);
-      const formMatches = Array.from(new Set(html.match(/<\s*(form|input|button|textarea|select)([^>]*)>/gi) || [])).slice(0, 20);
+      const textMatches = Array.from(
+        new Set((html.match(/>([^<>]{2,200})</g) || []).map((m: string) => m.replace(/^>/, '').replace(/<$/, '').trim())),
+      ) as string[];
+      const formMatches = Array.from(new Set(html.match(/<\s*(form|input|button|textarea|select)([^>]*)>/gi) || [])) as string[];
 
       return {
         targetUrl: url,
@@ -85,8 +87,8 @@ export async function capturePage(options: { url: string; outputDir?: string; ti
         pageTitle: '',
         screenshotPath: pngPath,
         htmlSnapshotPath: htmlPath,
-        visibleText: textMatches,
-        formSelectors: formMatches,
+        visibleText: textMatches.slice(0, maxVisibleItems),
+        formSelectors: formMatches.slice(0, 20),
         capturedAt,
         status: html ? 'captured' : 'fetch_failed',
       };

@@ -15,91 +15,107 @@ const shadow = "rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, rgba(42, 51, 69, 0.04) 
 
 const stages = [
   {
-    name: "SOURCE",
-    label: "Source Code",
-    code: `fn fibonacci(n: u32) -> u32 {
-  match n {
-    0 => 0,
-    1 => 1,
-    _ => fibonacci(n - 1)
-         + fibonacci(n - 2),
+    name: "EVIDENCE",
+    label: "Scraped Evidence Bundle",
+    code: `{
+  "targetUrl": "https://ghostnct.ai/login",
+  "finalUrl": "https://ghostnct.ai/login",
+  "pageTitle": "GhostNet AI Secure Login",
+  "screenshotPath": "screenshots/threat_01.png",
+  "htmlSnapshotPath": "html/threat_01.html",
+  "formSelectors": ["form", "input[email]", "input[password]"],
+  "visibleText": [
+    "Sign in to your GhostNet AI Dashboard",
+    "Enter your master access keys below"
+  ],
+  "status": "captured"
+}`,
+  },
+  {
+    name: "PROMPT",
+    label: "Gemini Structured Prompts",
+    code: `You are a brand protection analyst for GhostNet AI.
+
+Analyze these scraped results and determine if they are
+suspicious, impersonating, or threatening to the brand.
+
+Return ONLY a valid JSON object matching the exact schema:
+{
+  "brandName": "GhostNet AI",
+  "threats": [{
+    "url": "https://ghostnct.ai/login",
+    "threatScore": 94,
+    "urgency": "Critical",
+    "threatType": "Phishing",
+    "whatIsHappening": "Impersonating login page...",
+    "whyItsDangerous": "Credential harvesting risk..."
+  }]
+}`,
+  },
+  {
+    name: "RESPONSE",
+    label: "Gemini Model Raw Output",
+    code: `{
+  "brandName": "GhostNet AI",
+  "scanSummary": {
+    "totalScanned": 1,
+    "threatsFound": 1,
+    "safeDomains": 0,
+    "scanDate": "May 28, 2026",
+    "overallRiskLevel": "Critical"
+  },
+  "threats": [
+    {
+      "url": "https://ghostnct.ai/login",
+      "title": "GhostNet AI Secure Login",
+      "source": "Google",
+      "threatScore": 94,
+      "urgency": "Critical",
+      "threatType": "Phishing",
+      "whatIsHappening": "Impersonating login page.",
+      "whyItsDangerous": "Harvests customer access keys.",
+      "recommendedAction": "Takedown Request",
+      "registrarHint": "Namecheap Inc.",
+      "abuseContactHint": "abuse@namecheap.com"
+    }
+  ]
+}`,
+  },
+  {
+    name: "VALIDATION",
+    label: "JSON Schema Validator Engine",
+    code: `const validator = {
+  validate(output) {
+    const data = JSON.parse(output);
+    assert(data.brandName === "GhostNet AI");
+    assert(data.scanSummary.totalScanned >= 0);
+    assert(["Critical","High","Medium","Low"].includes(
+      data.scanSummary.overallRiskLevel
+    ));
+    assert(data.threats.every(t => 
+      t.threatScore >= 0 && t.threatScore <= 100
+    ));
+    return { status: "validated", data };
   }
 }`,
   },
   {
-    name: "TOKENS",
-    label: "Lexer Output",
-    code: `[FN] [IDENT:"fibonacci"] [LPAREN]
-[IDENT:"n"] [COLON] [TYPE:"u32"]
-[RPAREN] [ARROW] [TYPE:"u32"]
-[LBRACE] [MATCH] [IDENT:"n"]
-[LBRACE] [LIT:0] [FAT_ARROW]
-[LIT:0] [COMMA] [LIT:1]
-[FAT_ARROW] [LIT:1] [COMMA]
-[UNDERSCORE] [FAT_ARROW] ...`,
-  },
-  {
-    name: "AST",
-    label: "Abstract Syntax Tree",
-    code: `Program
-└─ FnDecl "fibonacci"
-   ├─ Param: n (u32)
-   ├─ ReturnType: u32
-   └─ Body: MatchExpr
-      ├─ Arm: 0 => Lit(0)
-      ├─ Arm: 1 => Lit(1)
-      └─ Arm: _ => BinOp(+)
-         ├─ Call(fibonacci, Sub(n, 1))
-         └─ Call(fibonacci, Sub(n, 2))`,
-  },
-  {
-    name: "IR",
-    label: "Intermediate Repr.",
-    code: `define i32 @fibonacci(i32 %n) {
-entry:
-  %cmp0 = icmp eq i32 %n, 0
-  br i1 %cmp0, label %ret0, %chk1
-ret0:
-  ret i32 0
-chk1:
-  %cmp1 = icmp eq i32 %n, 1
-  br i1 %cmp1, label %ret1, %rec
-ret1:
-  ret i32 1
-rec:
-  %sub1 = sub i32 %n, 1
-  %call1 = call i32 @fibonacci(%sub1)
-  %sub2 = sub i32 %n, 2
-  %call2 = call i32 @fibonacci(%sub2)
-  %sum = add i32 %call1, %call2
-  ret i32 %sum
-}`,
-  },
-  {
-    name: "ASM",
-    label: "Machine Code",
-    code: `fibonacci:
-  push   rbp
-  mov    rbp, rsp
-  push   rbx
-  push   r12
-  mov    ebx, edi
-  cmp    ebx, 1
-  jbe    .base_case
-  lea    edi, [rbx - 1]
-  call   fibonacci
-  mov    r12d, eax
-  lea    edi, [rbx - 2]
-  call   fibonacci
-  add    eax, r12d
-  jmp    .done
-.base_case:
-  mov    eax, ebx
-.done:
-  pop    r12
-  pop    rbx
-  pop    rbp
-  ret`,
+    name: "REPORT",
+    label: "Structured Legal Draft Output",
+    code: `CEASE AND DESIST DEMAND FOR ABUSE REMOVAL
+Date: May 28, 2026
+To: Namecheap Inc. (abuse@namecheap.com)
+
+Subject: Urgent Phishing Takedown - https://ghostnct.ai/login
+
+This letter constitutes formal notice under the DMCA and local regulations
+that the domain ghostnct.ai is engaged in credential harvesting targeting
+our brand GhostNet AI.
+
+Evidence Attached:
+- Screenshot Checksum: 01JY0G4J5F2A4X1V
+- Captured HTML: html/threat_01.html
+Please disable this target immediately.`,
   },
 ]
 
@@ -110,25 +126,40 @@ export function SectionCompiler({ section }: { section: TechSection }) {
 
   return (
     <div ref={ref} className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
-      {/* Header with ghost number */}
+      {/* Header Box (aligned with Section 02) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mb-12 flex items-end gap-6"
+        className="flex flex-col gap-4 bg-black p-8 border border-border mb-6"
+        style={{ boxShadow: shadow }}
       >
-        <span className="font-pixel-line text-7xl font-bold leading-none text-foreground/[0.08] md:text-9xl">
-          {section.number}
-        </span>
-        <div className="flex-1 pb-2">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-end gap-6">
+            <span className="font-pixel-line text-7xl font-bold leading-none text-foreground md:text-9xl">
+              {section.number}
+            </span>
+            <div className="pb-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{section.subtitle}</span>
+              </div>
+              <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
+                {section.title}
+              </h2>
+            </div>
           </div>
-          <h2 className="mt-2 font-pixel-line text-3xl font-bold text-foreground md:text-5xl">
-            {section.title}
-          </h2>
-          <p className="mt-4 max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">{section.description}</p>
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="h-2.5 w-2.5 bg-foreground"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            />
+            <span className="font-mono text-xs text-muted-foreground">LIVE</span>
+          </div>
         </div>
+        <p className="max-w-2xl font-mono text-xs leading-relaxed text-muted-foreground">
+          {section.description}
+        </p>
       </motion.div>
 
       {/* IDE-like panel */}

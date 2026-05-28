@@ -8,8 +8,8 @@ global.TextDecoder = TextDecoder as any;
 global.ReadableStream = ReadableStream as typeof global.ReadableStream;
 global.TransformStream = TransformStream as typeof global.TransformStream;
 global.WritableStream = WritableStream as typeof global.WritableStream;
-global.MessageChannel = MessageChannel as typeof global.MessageChannel;
-global.MessagePort = MessagePort as typeof global.MessagePort;
+global.MessageChannel = MessageChannel as unknown as typeof global.MessageChannel;
+global.MessagePort = MessagePort as unknown as typeof global.MessagePort;
 
 const { Blob, File, FormData, Headers, Request, Response } = require('undici');
 

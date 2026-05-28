@@ -10,13 +10,13 @@ const TECH_ITEMS = [
   "Bright Data SERP API",
   "Web Unlocker",
   "Scraping Browser",
-  "Claude-3.5-Sonnet",
+  "Gemini-2.5-Flash",
   "PostgreSQL",
 ]
 
 export function TechTicker() {
   return (
-    <div className="overflow-hidden border-y border-border py-3" aria-label="Technology stack ticker">
+    <div className="overflow-hidden border-y border-border py-10" aria-label="Technology stack ticker">
       <motion.div
         className="flex gap-8 whitespace-nowrap"
         animate={{ x: ["0%", "-50%"] }}

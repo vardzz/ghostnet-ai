@@ -303,7 +303,7 @@ Recommended event behavior:
 
 ## 3. `POST /api/takedown/generate`
 
-Triggers Claude to convert a validated threat into a structured legal report.
+Triggers Gemini (Google AI) to convert a validated threat into a structured legal report.
 
 ### Request
 
@@ -404,7 +404,7 @@ Example response:
 
 - `400 Bad Request` if the threat is missing or not in a reportable state.
 - `404 Not Found` if the requested threat does not exist.
-- `422 Unprocessable Entity` if Claude returned an invalid legal report schema.
+- `422 Unprocessable Entity` if Gemini returned an invalid legal report schema.
 - `503 Service Unavailable` if analysis cannot complete within the execution budget.
 
 ## Endpoint Consistency Rules

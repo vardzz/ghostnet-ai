@@ -1,8 +1,8 @@
 /**
- * @file src/app/api/claude/analyze/route.ts
- * @description POST /api/claude/analyze
+ * @file src/app/api/gemini/analyze/route.ts
+ * @description POST /api/gemini/analyze
  *
- * Accepts a threatId and an evidence bundle, runs Claude analysis, persists
+ * Accepts a threatId and an evidence bundle, runs Gemini analysis, persists
  * the result, and returns the outcome envelope.
  *
  * Request body:
@@ -15,7 +15,7 @@
  * {
  *   "threatId": "...",
  *   "analysisState": "success" | "needs_review",
- *   "analysis": { ...ClaudeAnalysisOutput } | null,
+ *   "analysis": { ...GeminiAnalysisOutput } | null,
  *   "validationErrors": string[] | null,
  *   "rawModelOutput": string | null,
  *   "reason": string | null,
@@ -24,10 +24,10 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { runClaudeAnalysis } from "@/lib/claude/analysis-service";
-import { writeSuccessfulAnalysis, writeNeedsReview } from "@/lib/claude/threats-store";
+import { runGeminiAnalysis } from "@/lib/gemini/analysis-service";
+import { writeSuccessfulAnalysis, writeNeedsReview } from "@/lib/gemini/threats-store";
 import { saveEvidence } from "@/lib/db/save-evidence";
-import type { EvidencePacket } from "@/lib/claude/prompt-template";
+import type { EvidencePacket } from "@/lib/gemini/prompt-template";
 
 // ─── Request Schema ───────────────────────────────────────────────────────────
 
@@ -53,6 +53,25 @@ function isValidBody(body: unknown): body is AnalyzeRequestBody {
   if (typeof b.threatId !== "string" || b.threatId.trim() === "") return false;
   if (typeof b.evidence !== "object" || b.evidence === null) return false;
   return true;
+}
+
+function mapAnalysisThreatType(
+  threatType?: string
+): AnalyzeRequestBody["threatContext"] extends infer Context
+  ? Context extends undefined
+    ? never
+    : "typosquat" | "phishing" | "spoofed_social" | "impersonation" | "lookalike_domain" | "benign"
+  : never {
+  switch (threatType) {
+    case "phishing":
+      return "phishing";
+    case "social_engineering":
+      return "spoofed_social";
+    case "unknown":
+      return "benign";
+    default:
+      return "benign";
+  }
 }
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -83,7 +102,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const threatContext = body.threatContext;
 
   // ── Run analysis ──────────────────────────────────────────────────────────
-  const result = await runClaudeAnalysis(evidence);
+  const result = await runGeminiAnalysis(evidence);
 
   // ── Persist result ────────────────────────────────────────────────────────
   if (result.analysisState === "success" && result.analysis) {
@@ -100,7 +119,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (threatContext) {
     await saveEvidence({
       ...threatContext,
-      threatType: result.analysis?.threatType ?? "benign",
+      threatType: mapAnalysisThreatType(result.analysis?.threatType),
       threatScore: result.analysis?.threatScore ?? 0,
       confidenceScore: result.analysis?.confidence ?? 0,
       urgencyLevel: result.analysis?.urgencyLevel ?? "low",
