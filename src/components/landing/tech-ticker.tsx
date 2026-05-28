@@ -16,7 +16,7 @@ const TECH_ITEMS = [
 
 export function TechTicker() {
   return (
-    <div className="overflow-hidden border-y border-border py-3" aria-label="Technology stack ticker">
+    <div className="overflow-hidden border-y border-border py-10" aria-label="Technology stack ticker">
       <motion.div
         className="flex gap-8 whitespace-nowrap"
         animate={{ x: ["0%", "-50%"] }}

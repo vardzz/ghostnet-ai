@@ -64,7 +64,7 @@ export function HeroSection() {
   const asciiFrame = useAsciiFrame(30, 80, motionEnabled)
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-8 md:pt-12">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-8 md:pt-12 pb-16 md:pb-24">
       {/* Scanline overlay */}
       {motionEnabled && (
         <div
@@ -130,33 +130,6 @@ export function HeroSection() {
           </a>
         </motion.div>
 
-        {/* Animated ASCII art display */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="mt-8 w-full max-w-lg border border-border bg-secondary/50 p-4"
-          role="img"
-          aria-label="ASCII art animation representing a terminal interface"
-        >
-          <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 bg-muted-foreground" />
-            <div className="h-2 w-2 bg-muted-foreground/50" />
-            <div className="h-2 w-2 bg-muted-foreground/30" />
-            <span className="ml-2 font-mono text-[10px] text-muted-foreground">
-              ghostnet-ai ~ v1.0.0
-            </span>
-          </div>
-          <pre className="overflow-hidden font-mono text-[10px] leading-relaxed text-foreground/80 md:text-xs">
-            {`> initializing threat discovery...
-> connecting bright_data pipeline...
-> llm_engine: Gemini-2.0-Flash [READY]
-> target_status: MONITORING...
-> status: OPERATIONAL
-> _`}
-            <span className="animate-blink">{"█"}</span>
-          </pre>
-        </motion.div>
       </div>
     </section>
   )
