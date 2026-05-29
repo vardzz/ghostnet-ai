@@ -101,9 +101,10 @@ export function HeroSection() {
           </h1>
 
           <p className="max-w-prose font-mono text-sm leading-relaxed text-muted-foreground md:text-base">
-            AI-powered brand impersonation detection in under two minutes. GhostNet AI
-            scans the live web for phishing sites, typosquats, and cloned profiles—then
-            captures screenshot-backed evidence and drafts takedown reports automatically.
+            AI-assisted brand‑impersonation monitoring. GhostNet AI scans the live
+            web for phishing sites, typosquats and cloned profiles, captures
+            verifiable screenshots and HTML snapshots, and produces a machine‑readable
+            draft takedown report (JSON) for human review and action.
           </p>
         </motion.div>
 
